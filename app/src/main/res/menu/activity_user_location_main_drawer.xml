@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/navigation_header"
+            android:title="Ben">
+            <menu>
+                <item
+                    android:id="@+id/nav_my_location"
+                    android:onClick="goToMyLocation"
+                    android:icon="@drawable/my_location"
+                    android:title="@string/my_location" />
+                <item
+                    android:id="@+id/nav_get_invite_code"
+                    android:icon="@drawable/copy_clipboard"
+                    android:title="@string/get_invite_code"
+                    android:onClick="getMyInviteCode"/>
+                <item
+                    android:id="@+id/nav_share_location"
+                    android:title="@string/share_on_whatsapp"
+                    android:icon="@drawable/share_on_whatsapp"
+                    android:onClick="shareOnWhatsapp"/>
+                <item
+                    android:id="@+id/nav_sign_out"
+                    android:icon="@drawable/sign_out"
+                    android:title="@string/sign_out"
+                    android:onClick="signOut"/>
+            </menu>
+        </item>
+
+        <item
+            android:id="@+id/navigation_subheader"
+            android:title="Takip Ettiklerim">
+            <menu>
+                <item
+                    android:id="@+id/navigation_sub_item_1"
+                    android:title="Cansu Diricanlı"
+                    android:icon="@drawable/explore"
+                    android:onClick="goToCansu"/>
+                <item
+                    android:id="@+id/navigation_sub_item_2"
+                    android:title="Mühendislik Fakültesi"
+                    android:icon="@drawable/explore"
+                    android:onClick="goToFaculty"/>
+            </menu>
+        </item>
+
+    </group>
+</menu>

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1071456754738",
+    "firebase_url": "https://locate-your-friends-db.firebaseio.com",
+    "project_id": "locate-your-friends-db",
+    "storage_bucket": "locate-your-friends-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071456754738:android:59eaa482315cce2794702b",
+        "android_client_info": {
+          "package_name": "com.furkan.locateyourfriends"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1071456754738-ubgdhn49a034oj6re6cjho1cleb74ebg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsOA7ySe5CNKfruyD4_NGc0wtHVz3Su74"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1071456754738-ubgdhn49a034oj6re6cjho1cleb74ebg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

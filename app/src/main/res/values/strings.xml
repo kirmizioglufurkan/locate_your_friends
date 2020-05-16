@@ -1,0 +1,76 @@
+<resources>
+
+    <string name="app_name">Neredesin</string>
+    <string name="title_activity_user_location_main">UserLocationMainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="menu_home">@string/app_name</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="home_second">Home Second</string>
+    <string name="title_activity_maps">Map</string>
+
+
+    <!--ORDER BY ACTIVITIES-->
+
+    <!--Common Strings-->
+    <string name="check_information">Bilgileriniz kontrol ediliyor...</string>
+    <string name="button_back">Back Button</string>
+    <!--Common Strings End-->
+
+    <!--Welcome Activity-->
+    <string name="welcome_main_text">Hoşgeldiniz.</string>
+    <string name="welcome_sub_text">Devam etmek için lütfen giriş yapın.</string>
+    <string name="welcome_button_text">Giriş Yap</string>
+    <string name="welcome_member_text">Henüz bir kaydınız yok mu?</string>
+    <string name="welcome_register_text">Üye olun.</string>
+    <!--Welcome Activity End-->
+
+    <!--Login Activity-->
+    <string name="login_main_text">Giriş Yap</string>
+    <string name="login_email_hint">nerdesin@gmail.com</string>
+    <string name="login_password_hint">* * * * * * * * * </string>
+    <string name="login_help_text">Yardım ?</string>
+    <string name="login_button_text">Giriş Yap</string>
+    <string name="login_member_text">Henüz bir kaydınız yok mu?</string>
+    <string name="login_register_text">Üye olun.</string>
+    <!--Login Activity End-->
+
+    <!--Register Activity-->
+    <string name="register_main_text">Kayıt Ol</string>
+    <string name="register_username_hint">Kullanıcı Adınız</string>
+    <string name="register_email_hint">nerdesin@gmail.com</string>
+    <string name="register_password_hint">* * * * * * * * *</string>
+    <string name="register_image_text">Lütfen aşağıdaki kutucuktan profil resmi seçiniz.</string>
+    <!--Register Activity End-->
+
+    <!--Gallery Activity-->
+    <string name="register_profile_text">Profil</string>
+    <string name="register_name_hint">Adınız</string>
+    <string name="register_surname_hint">Soyadınız</string>
+    <string name="register_phone_hint">0(53X) XXX XX XX</string>
+    <string name="register_button_text">Devam Et</string>
+    <!--Gallery Activity End-->
+
+    <!--Invite Code Activity-->
+    <string name="register_invite_code_text">Kaydı Tamamla</string>
+    <string name="register_invite_code_sub_text">Size özel bu kodla kayıt işleminiz gerçekleştirilecektir.</string>
+    <string name="register_invite_code_code_text">* * * * * * * * *</string>
+    <string name="register_invite_code_button_text">Kayıt Ol</string>
+    <!--Invite Code Activity End-->
+
+
+    <string name="my_location">Konumuma Git</string>
+    <string name="get_invite_code">Kodumu Kopyala</string>
+    <string name="invite_members">Davet Et</string>
+    <string name="share_on_whatsapp">Konumumu Whatsapp"'"ta Paylaş </string>
+    <string name="sign_out">Çıkış</string>
+    <string name="cansu_location">Cansu Diricanlı</string>
+    <string name="faculty_location">Mühendislik Fakültesi</string>
+    <string name="action_location_settings">GPS ayarları</string>
+
+
+</resources>
