@@ -1,8 +1,6 @@
 package com.furkan.locateyourfriends;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -29,8 +27,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         tvRegister = findViewById(R.id.tv_welcome_register);
         btnLogin.setOnClickListener(this);
         tvRegister.setOnClickListener(this);
-        permissionManager = new PermissionManager() {
-        };
+        permissionManager = new PermissionManager() {};
         permissionManager.checkAndRequestPermissions(this);
     }
 

@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.santalu.maskedittext.MaskEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import java.text.SimpleDateFormat;
@@ -24,7 +26,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class GalleryActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String username,email,password, name, surname, phoneNumber;
-    private EditText etName, etSurname, etPhoneNumber;
+    private EditText etName, etSurname;
+    private MaskEditText etPhoneNumber;
     private CircleImageView circleImageView; private Uri resultUri;
     private Button btnGallery; private ImageView imgBack;
 
@@ -97,7 +100,7 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
 
         name = etName.getText().toString();
         surname = etSurname.getText().toString();
-        phoneNumber = etPhoneNumber.getText().toString();
+        phoneNumber = etPhoneNumber.getRawText().toString();
         Animation animation = AnimationUtils.loadAnimation(this,R.anim.fade_in);
         btnGallery.startAnimation(animation);
 

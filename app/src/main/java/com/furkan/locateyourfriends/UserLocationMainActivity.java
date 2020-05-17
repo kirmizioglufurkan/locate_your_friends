@@ -3,7 +3,11 @@ package com.furkan.locateyourfriends;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -23,8 +27,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,11 +40,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.SphericalUtil;
 import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -46,22 +58,23 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+
 public class UserLocationMainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener,
-GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    private FirebaseAuth auth; private FirebaseUser user; private DatabaseReference reference;
-    private GoogleMap mMap; private GoogleApiClient client;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private DatabaseReference reference;
+    private GoogleMap mMap;
+    private GoogleApiClient client;
     private LocationRequest request;
 
-    private String user_name, user_surname, user_email, user_uid, user_imageUrl;
-    private TextView tv_username,tv_useremail; private ImageView iv_userimage;
-
-    private LatLng latLngStart;
-    private LatLng corlu = new LatLng(41.1539589,27.8126231);
-    private LatLng muhendislik = new LatLng(41.6334751,26.6217317);
-    private LatLng mapDefault = new LatLng(41.0049823,28.7319909);
+    private String user_name, user_surname, user_uid;
+    private TextView tv_username, tv_user_email; private ImageView iv_user_image;
+    private LatLng latLngUser; private LatLng mapDefault = new LatLng(41.0049823, 28.7319909);
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,53 +83,54 @@ GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
-
+        tv_username = header.findViewById(R.id.tv_user_name);
+        tv_user_email = header.findViewById(R.id.tv_user_email);
+        iv_user_image = header.findViewById(R.id.iv_userimage);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
-                .setDrawerLayout(drawer)
-                .build();
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow).setDrawerLayout(drawer).build();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-
-        tv_username = header.findViewById(R.id.tv_user_name);
-        tv_useremail = header.findViewById(R.id.tv_user_email);
-        iv_userimage = header.findViewById(R.id.iv_userimage);
-
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        user_uid = auth.getUid();
+        auth = FirebaseAuth.getInstance();user = auth.getCurrentUser();user_uid = auth.getUid();
         reference = FirebaseDatabase.getInstance().getReference().child("Users");
-
-        //Retrieving user information from database.
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.child(user_uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                user_name = dataSnapshot.child(user_uid).child("name").getValue(String.class);
-                user_surname = dataSnapshot.child(user_uid).child("surname").getValue(String.class);
-                user_email = dataSnapshot.child(user_uid).child("email").getValue(String.class);
-                user_imageUrl = dataSnapshot.child(user_uid).child("imageUrl").getValue(String.class);
-
-                tv_username.setText(user_name  + " " + user_surname);
-                tv_useremail.setText(user_email);
-                Picasso.get().load(user_imageUrl).into(iv_userimage);
+                if(dataSnapshot.exists()) {
+                    user_name = dataSnapshot.child("name").getValue(String.class);
+                    user_surname = dataSnapshot.child("surname").getValue(String.class);
+                }
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+        reference.child(user_uid).child("isSharing").setValue(true);
+        currentUserInformation(reference);
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveToCurrentLocation(latLngUser);
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        dbRef.child(user_uid).child("isSharing").setValue(false);
+        super.onDestroy();
+        finish();
     }
 
     @Override
@@ -140,7 +154,7 @@ GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         return true;
     }
 
-    //Getting location.
+    //Gets location.
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -150,19 +164,20 @@ GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
                 .addOnConnectionFailedListener(this).build();
         client.connect();
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapDefault,7));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapDefault, 7));
         // Zoom in, animating the camera.
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
         // Zoom out to zoom level 10, animating with a duration of 2 seconds.
         mMap.animateCamera(CameraUpdateFactory.zoomTo(7), 2000, null);
+
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         request = new LocationRequest().create();
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        request.setInterval(3000);
-        LocationServices.FusedLocationApi.requestLocationUpdates(client,request,this);
+        request.setInterval(5000);
+        LocationServices.FusedLocationApi.requestLocationUpdates(client, request, this);
     }
 
     @Override
@@ -175,94 +190,197 @@ GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
 
     }
 
-    //Locating user in the Google Maps.
     @Override
     public void onLocationChanged(Location location) {
-        if(location == null) {
-            Toast.makeText(getApplicationContext(), "Konumunuz bulunamadı.",Toast.LENGTH_LONG).show();
+        if (location == null) {
+            Toast.makeText(getApplicationContext(), "Konumunuz bulunamadı.", Toast.LENGTH_LONG).show();
         } else {
+            double latTemp = location.getLatitude(); double lngTemp = location.getLongitude();
+            reference.child(user_uid).child("lat").setValue(latTemp); reference.child(user_uid).child("lng").setValue(lngTemp);
+
             mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(corlu)
-                    .title("Cansu Diricanlı şu an burada.")
-                    //.icon(vectorToBitmap(R.drawable.friends_marker, Color.parseColor("#D73534")))
-            );
+            latLngUser = new LatLng(location.getLatitude(), location.getLongitude());
+            mMap.addMarker(new MarkerOptions()
+                    .icon(bitmapDescriptorFromVector(this, R.drawable.my_marker))
+                    .position(latLngUser)
+                    .title(user_name + " " + user_surname + " şu an burada."));
+            retrieveOtherUsersLocations(mMap);
+            setMenuItem(reference, navigationView);
 
-            mMap.addMarker(new MarkerOptions().position(muhendislik)
-                    .title("Mühendislik Fakültesi şu an burada.")
-            //.icon(vectorToBitmap(R.drawable.friends_marker, Color.parseColor("#D73534")))
-            );
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(latLngUser);
+            LatLngBounds bounds = builder.build();
 
 
-            reference.child(user_uid).child("lat").setValue(location.getLatitude()).toString();
-            reference.child(user_uid).child("lng").setValue(location.getLongitude()).toString();
-
-            latLngStart = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(latLngStart)
-                    .title(user_name + " şu an burada.")
-                    //.icon(vectorToBitmap(R.drawable.ic_gps_fixed_black_24dp, Color.parseColor("#D73534")))
-            );
         }
     }
 
-    //Zoom to the current location.
+    // Brings user closer to current location.
     private void moveToCurrentLocation(LatLng currentLocation) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation,15));
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawers();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
         // Zoom in, animating the camera.
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
         // Zoom out to zoom level 10, animating with a duration of 2 seconds.
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
     }
 
-    //Side menu functions.
-    public void goToMyLocation(MenuItem m){
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawers();
-        moveToCurrentLocation(latLngStart);
-    }
-
-    public void getMyInviteCode(MenuItem m){
+    // Copies UserUID to clipboard.
+    public void getMyInviteCode() {
         DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawers();
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Davet Kodu", user.getUid());
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(getApplicationContext(),"Kodunuz kopyalandı.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Kodunuz kopyalandı.", Toast.LENGTH_SHORT).show();
     }
 
-    public void shareOnWhatsapp(MenuItem m) {
+    // Shares instant location on WhatsApp.
+    public void shareOnWhatsApp() {
         DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawers();
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT,"Şu an buradayım: " + "https://www.google.com/maps/@" + latLngStart.latitude + "," + latLngStart.longitude + ",17z");
+        intent.putExtra(Intent.EXTRA_TEXT, "Şu an buradayım: " + "https://www.google.com/maps/@" + latLngUser.latitude + "," + latLngUser.longitude + ",17z");
         intent.setPackage("com.whatsapp");
         startActivity(intent);
     }
 
-    public void signOut(MenuItem m) {
-        if(user != null) {
+    //Sign out.
+    public void signOut() {
+        if (user != null) {
+            reference.child(user_uid).child("isSharing").setValue(false);
             auth.signOut();
             startActivity(new Intent(UserLocationMainActivity.this, WelcomeActivity.class));
             finish();
         }
     }
 
-    public void locationSettings(MenuItem m){
+    // Goes to Location Settings
+    public void locationSettings(MenuItem m) {
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawers();
         startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
     }
 
-    public void goToCansu(MenuItem m){
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawers();
-        moveToCurrentLocation(corlu);
+    // Fetches other users locations. (need to optimize)
+    private void retrieveOtherUsersLocations(final GoogleMap mMap) {
+        Query query = reference.orderByChild("isSharing").equalTo(true);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // dataSnapshot is the "Users" node with all children with isSharing = true.
+                    for (final DataSnapshot ds : dataSnapshot.getChildren()) {
+                            final LatLng latLngTemp = new LatLng(ds.child("lat").getValue(Double.class), ds.child("lng").getValue(Double.class));
+                            mMap.addMarker(new MarkerOptions()
+                                    .icon(bitmapDescriptorFromVector(UserLocationMainActivity.this, R.drawable.friends_marker))
+                                    .position(latLngTemp)
+                                    .title(ds.child("name").getValue(String.class) +  " " + ds.child("surname").getValue(String.class) + " - Uzaklık: " + distanceCalculator(latLngTemp, latLngUser)));
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
     }
 
-    public void goToFaculty(MenuItem m){
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawers();
-        moveToCurrentLocation(muhendislik);;
+    // Fetches information of current user.
+    private void currentUserInformation(DatabaseReference reference){
+        //Retrieving user information from database.
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                tv_username.setText(dataSnapshot.child(user_uid).child("name").getValue(String.class)  + " " + dataSnapshot.child(user_uid).child("surname").getValue(String.class));
+                tv_user_email.setText(dataSnapshot.child(user_uid).child("email").getValue(String.class));
+                Picasso.get().load(dataSnapshot.child(user_uid).child("imageUrl").getValue(String.class)).into(iv_user_image);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    //Changes NavigationView - SideMenu items.
+    private void setMenuItem(DatabaseReference refMenuItem, final NavigationView navView) {
+        Menu menu = navView.getMenu();
+        menu.clear();
+        menu.add(R.string.my_location).setIcon(R.drawable.my_location).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) { moveToCurrentLocation(latLngUser);return true; }});
+        menu.add(R.string.get_invite_code).setIcon(R.drawable.copy_clipboard).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) { getMyInviteCode();return true; }});
+        menu.add(R.string.share_on_whatsApp).setIcon(R.drawable.share_on_whatsapp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) { shareOnWhatsApp();return true; }});
+        menu.add(R.string.sign_out).setIcon(R.drawable.sign_out).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) { signOut();return true; }});
+
+        final Menu sideMenu = menu.addSubMenu("Çevrimiçi Kullanıcılar");
+        Query query = refMenuItem.orderByChild("isSharing").equalTo(true);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    for(final DataSnapshot ds : dataSnapshot.getChildren()){
+                        sideMenu.add(ds.child("name").getValue(String.class) + " " + ds.child("surname").getValue(String.class))
+                                .setIcon(R.drawable.explore).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        LatLng latLngTemp = new LatLng(ds.child("lat").getValue(Double.class), ds.child("lng").getValue(Double.class));
+                                        moveToCurrentLocation(latLngTemp);
+                                        onNavigationItemSelected(item);
+                                        return true;
+                                    }
+                                });
+                    }
+                } else {
+                    sideMenu.add("Şu anda hiç kimse çevrimiçi değil.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    //Calculates distance between two GPS coordinates.
+    private String distanceCalculator(LatLng b, LatLng a){
+        double distance = SphericalUtil.computeDistanceBetween(b,a);
+        if(distance < 1000) return distance + " metre.";
+        else return Math.round(distance / 1000) + " km.";
+    }
+
+    //Action when user pressed return button.
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(UserLocationMainActivity.this);
+        builder.setTitle("Uyarı");
+        builder.setIcon(R.drawable.sign_out);
+        builder.setMessage("Uygulamadan çıkmak istiyor musunuz?");
+        builder.setNegativeButton("Hayır", null);
+        builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        reference.child(user_uid).child("isSharing").setValue(false);
+                        UserLocationMainActivity.this.finish();
+                        System.exit(0); }});
+        builder.show();
+    }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable background = ContextCompat.getDrawable(context, R.drawable.ic_map_pin_filled_blue_48dp);
+        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
 }

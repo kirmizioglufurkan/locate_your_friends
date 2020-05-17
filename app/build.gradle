@@ -32,6 +32,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.karanchuri:PermissionManager:0.1.0'
+    implementation 'com.github.santalu:mask-edittext:1.1.1'
 
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -46,6 +47,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'com.google.firebase:firebase-database:19.3.0'
     implementation 'com.google.firebase:firebase-storage:19.1.1'
+    implementation 'com.google.maps.android:android-maps-utils:1.2.1'
 
 
     testImplementation 'junit:junit:4.12'

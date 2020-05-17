@@ -1,12 +1,18 @@
 package com.furkan.locateyourfriends;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -57,58 +63,78 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private void registerUser(View v) {
-        dialog.setMessage("Kullanıcı bilgileriniz kaydediliyor...");
-        dialog.show();
-        auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
-                            //Insert values in realtime database
-                            CreateUser createUser = new CreateUser(username,email,password,name,surname, phoneNumber, code,"false","na","na","na");
-                            user = auth.getCurrentUser(); userId = user.getUid();
-                            reference.child(userId).setValue(createUser).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()) {
-                                        //Storage images to firebase
-                                        StorageReference sr = storageReference.child(user.getUid() + ".jpg");
-                                        sr.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> taskSnapshot) {
-                                                        if (taskSnapshot.isSuccessful()) {
-                                                            String image_download_path = taskSnapshot.getResult().getMetadata().getReference().getDownloadUrl().toString();
-                                                            reference.child(user.getUid()).child("imageUrl").setValue(image_download_path).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                            if (task.isSuccessful()) {
-                                                                                reference.child(user.getUid()).child("code").setValue(user.getUid());
-                                                                                dialog.dismiss();
-                                                                                Toast.makeText(getApplicationContext(), "Başarıyla kaydedildi.", Toast.LENGTH_SHORT).show();
-                                                                                Intent intent = new Intent(InviteCodeActivity.this, LoginActivity.class);
-                                                                                intent.putExtra("email",email);
-                                                                                startActivity(intent);
-                                                                                finish();
-                                                                            }
-                                                                        }
-                                                                    });
-                                                        }
-                                                    }
-                                                });
-                                    } else {
-                                        dialog.dismiss();
-                                        Toast.makeText(getApplicationContext(),"Kayıt işlemi sırasında bir hata oluştu.",Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }); }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_invite_code: registerUser(v); break;
+            case R.id.btn_invite_code: checkAndRegister(v); break;
         }
+    }
+
+    private void checkAndRegister(View v){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
+        if(activeInfo != null && activeInfo.isConnected()){
+            dialog.setMessage("Bilgileriniz kaydediliyor...");
+            dialog.setCancelable(false);
+            dialog.show();
+            registerUser();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(InviteCodeActivity.this);
+            builder.setCancelable(false)
+                    .setTitle(R.string.invite_code_alert_title)
+                    .setIcon(R.drawable.wifi_off)
+                    .setMessage(R.string.register_alert_text)
+                    .setNegativeButton(R.string.register_alert_negative_text,null)
+                    .setPositiveButton(R.string.register_alert_positive_text, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) { InviteCodeActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)); }})
+                    .show();}
+    }
+
+    private void registerUser() {
+        auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()) {
+                    //Insert values in realtime database
+                    CreateUser createUser = new CreateUser(username,email,password,name,surname, phoneNumber, code,"false","na","na","na");
+                    user = auth.getCurrentUser(); userId = user.getUid();
+                    reference.child(userId).setValue(createUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()) {
+                                //Storage profile image to firebase
+                                StorageReference sr = storageReference.child(user.getUid() + ".jpg");
+                                sr.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> taskSnapshot) {
+                                        if (taskSnapshot.isSuccessful()) {
+                                            String image_download_path = storageReference.child(user.getUid() + ".jpg").getDownloadUrl().toString();
+                                            reference.child(user.getUid()).child("imageUrl").setValue(image_download_path).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        reference.child(user.getUid()).child("code").setValue(code);
+                                                        dialog.dismiss();
+                                                        Toast.makeText(getApplicationContext(), R.string.invite_code_successful, Toast.LENGTH_SHORT).show();
+                                                        Intent intent = new Intent(InviteCodeActivity.this, LoginActivity.class);
+                                                        intent.putExtra("email",email);
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            } else {
+                                dialog.dismiss();
+                                Toast.makeText(getApplicationContext(),R.string.invite_code_failed,Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 }

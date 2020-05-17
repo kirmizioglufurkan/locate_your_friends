@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_gps_settings"
+        android:onClick="locationSettings"
         android:orderInCategory="100"
         android:title="@string/action_location_settings"
-        android:onClick="locationSettings"
         app:showAsAction="never" />
 </menu>

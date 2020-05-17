@@ -8,14 +8,14 @@
 
     <ImageView
         android:id="@+id/img_gallery_back"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="70dp"
         app:layout_constraintBottom_toTopOf="@+id/tv_invite_code_main_text"
         app:layout_constraintStart_toStartOf="@+id/tv_invite_code_main_text"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back_icon" />
+        app:srcCompat="@drawable/back_button" />
 
     <TextView
         android:id="@+id/tv_invite_code_main_text"
@@ -68,7 +68,7 @@
         android:background="@drawable/input_field"
         android:ems="10"
         android:hint="@string/register_name_hint"
-        android:inputType="textPersonName"
+        android:inputType="textPersonName|textCapSentences"
         android:textColorHint="@color/background_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,7 +87,7 @@
         android:background="@drawable/input_field"
         android:ems="10"
         android:hint="@string/register_surname_hint"
-        android:inputType="textPersonName"
+        android:inputType="textPersonName|textCapSentences"
         android:textColorHint="@color/background_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/et_gallery_name"
@@ -95,7 +95,7 @@
         app:layout_constraintTop_toBottomOf="@+id/et_gallery_name"
         app:layout_constraintVertical_bias="0.0" />
 
-    <EditText
+    <com.santalu.maskedittext.MaskEditText
         android:id="@+id/et_gallery_phone"
         android:layout_width="match_parent"
         android:layout_height="50sp"
@@ -106,7 +106,7 @@
         android:ems="10"
         android:hint="@string/register_phone_hint"
         android:inputType="phone"
-        android:textColorHint="@color/background_gray"
+        app:met_mask="+90(###) ### ## ##"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/et_gallery_surname"
         app:layout_constraintStart_toStartOf="@+id/et_gallery_surname"
