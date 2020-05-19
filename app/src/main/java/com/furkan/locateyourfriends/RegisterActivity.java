@@ -1,9 +1,5 @@
 package com.furkan.locateyourfriends;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +15,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -108,10 +108,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
             builder.setCancelable(false);
             builder.setIcon(R.drawable.wifi_off);
-            builder.setTitle(R.string.register_alert_title);
-            builder.setMessage(R.string.register_alert_text);
-            builder.setNegativeButton(R.string.register_alert_negative_text, null);
-            builder.setPositiveButton(R.string.register_alert_positive_text, new DialogInterface.OnClickListener() {
+            builder.setTitle(getResources().getString(R.string.register_alert_title));
+            builder.setMessage(getResources().getString(R.string.register_alert_text));
+            builder.setNegativeButton(getResources().getString(R.string.register_alert_negative_text), null);
+            builder.setPositiveButton(getResources().getString(R.string.register_alert_positive_text), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) { RegisterActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));}});
             builder.show();

@@ -1,6 +1,5 @@
 package com.furkan.locateyourfriends;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +8,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.karan.churi.PermissionManager.PermissionManager;
 
@@ -50,7 +52,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         permissionManager.checkResult(requestCode,permissions,grantResults);
         ArrayList<String> denied_permissions = permissionManager.getStatus().get(0).denied;
         if(denied_permissions.isEmpty())
-            Toast.makeText(getApplicationContext(),"İzinler tamamlandı.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Permissions granted!", Toast.LENGTH_SHORT).show();
     }
 }
 

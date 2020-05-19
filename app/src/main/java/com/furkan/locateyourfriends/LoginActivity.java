@@ -1,8 +1,5 @@
 package com.furkan.locateyourfriends;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,13 +11,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.karan.churi.PermissionManager.PermissionManager;
-
-import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -58,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnLogin.startAnimation(animation);
 
         if(user_email.isEmpty() || user_password.isEmpty()){
-            Toast.makeText(getApplicationContext(),"E-Mail adresi ve şifre boş bırakılamaz!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_field_error), Toast.LENGTH_SHORT).show();
             email.setText(""); password.setText("");
         } else {
         auth.signInWithEmailAndPassword(user_email,user_password)
@@ -70,7 +67,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(),"Yanlış e-mail veya şifre girdiniz.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_wrong_info), Toast.LENGTH_SHORT).show();
                             email.setText("");
                             password.setText("");
                         }

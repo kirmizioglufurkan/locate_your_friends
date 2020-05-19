@@ -34,12 +34,8 @@
         android:text="@string/invite_code_sub_text"
         android:textColor="@color/background_gray"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/img_gallery_profile"
-        app:layout_constraintEnd_toEndOf="@+id/tv_invite_code_main_text"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tv_invite_code_main_text"
-        app:layout_constraintTop_toBottomOf="@+id/tv_invite_code_main_text"
-        app:layout_constraintVertical_bias="0.314" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_invite_code_main_text" />
 
     <TextView
         android:id="@+id/tv_invite_code_code_text"

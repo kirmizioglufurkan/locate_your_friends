@@ -1,5 +1,8 @@
 package com.furkan.locateyourfriends;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -9,14 +12,35 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,7 +54,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -45,36 +68,24 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.SphericalUtil;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-
 public class UserLocationMainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private AppBarConfiguration mAppBarConfiguration;
 
+    public static final String CHANNEL_1_ID = "channel1";
     private FirebaseAuth auth;
     private FirebaseUser user;
     private DatabaseReference reference;
     private GoogleMap mMap;
     private GoogleApiClient client;
     private LocationRequest request;
-
-    private String user_name, user_surname, user_uid;
-    private TextView tv_username, tv_user_email; private ImageView iv_user_image;
+    private String user_name, user_uid;
+    private TextView tv_username, tv_user_email;
+    private ImageView iv_user_image;
     private LatLng latLngUser; private LatLng mapDefault = new LatLng(41.0049823, 28.7319909);
     private NavigationView navigationView;
+    private NotificationManagerCompat notificationManagerCompat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,20 +109,26 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        auth = FirebaseAuth.getInstance();user = auth.getCurrentUser();user_uid = auth.getUid();
+        checkInternetConnection();
+        checkGPSConnection();
+        createNotificationChannels();
+
+        notificationManagerCompat = NotificationManagerCompat.from(UserLocationMainActivity.this);
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+        user_uid = auth.getUid();
         reference = FirebaseDatabase.getInstance().getReference().child("Users");
         reference.child(user_uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     user_name = dataSnapshot.child("name").getValue(String.class);
-                    user_surname = dataSnapshot.child("surname").getValue(String.class);
                 }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
         reference.child(user_uid).child("isSharing").setValue(true);
         currentUserInformation(reference);
 
@@ -119,17 +136,22 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                moveToCurrentLocation(latLngUser);
+                if (checkGPSConnection()) moveToCurrentLocation(latLngUser);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
+        super.onStop();
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users");
         dbRef.child(user_uid).child("isSharing").setValue(false);
-        super.onDestroy();
         finish();
     }
 
@@ -163,13 +185,11 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).build();
         client.connect();
-
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mapDefault, 7));
         // Zoom in, animating the camera.
         mMap.animateCamera(CameraUpdateFactory.zoomIn());
         // Zoom out to zoom level 10, animating with a duration of 2 seconds.
         mMap.animateCamera(CameraUpdateFactory.zoomTo(7), 2000, null);
-
     }
 
     @Override
@@ -182,40 +202,32 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     @Override
     public void onLocationChanged(Location location) {
         if (location == null) {
-            Toast.makeText(getApplicationContext(), "Konumunuz bulunamadı.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.user_location_error, Toast.LENGTH_LONG).show();
         } else {
-            double latTemp = location.getLatitude(); double lngTemp = location.getLongitude();
-            reference.child(user_uid).child("lat").setValue(latTemp); reference.child(user_uid).child("lng").setValue(lngTemp);
+            reference.child(user_uid).child("lat").setValue(location.getLatitude());
+            reference.child(user_uid).child("lng").setValue(location.getLongitude());
 
             mMap.clear();
             latLngUser = new LatLng(location.getLatitude(), location.getLongitude());
             mMap.addMarker(new MarkerOptions()
                     .icon(bitmapDescriptorFromVector(this, R.drawable.my_marker))
                     .position(latLngUser)
-                    .title(user_name + " " + user_surname + " şu an burada."));
+                    .title(getResources().getString(R.string.user_location_here)));
             retrieveOtherUsersLocations(mMap);
-            setMenuItem(reference, navigationView);
-
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            builder.include(latLngUser);
-            LatLngBounds bounds = builder.build();
-
-
+            setMenuItems(reference, navigationView);
         }
     }
 
-    // Brings user closer to current location.
+    // Brings user closer to chosen location.
     private void moveToCurrentLocation(LatLng currentLocation) {
         DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawers();
@@ -231,9 +243,9 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawers();
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Davet Kodu", user.getUid());
+        ClipData clip = ClipData.newPlainText("Invite Code", user.getUid());
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(getApplicationContext(), "Kodunuz kopyalandı.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_invite_code_copied), Toast.LENGTH_SHORT).show();
     }
 
     // Shares instant location on WhatsApp.
@@ -242,7 +254,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         mDrawerLayout.closeDrawers();
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, "Şu an buradayım: " + "https://www.google.com/maps/@" + latLngUser.latitude + "," + latLngUser.longitude + ",17z");
+        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.user_gps_whatsapp_text) + latLngUser.latitude + "," + latLngUser.longitude + ",17z");
         intent.setPackage("com.whatsapp");
         startActivity(intent);
     }
@@ -259,7 +271,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
 
     // Goes to Location Settings
     public void locationSettings(MenuItem m) {
-        DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawers();
         startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
     }
@@ -273,11 +285,17 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                 if (dataSnapshot.exists()) {
                     // dataSnapshot is the "Users" node with all children with isSharing = true.
                     for (final DataSnapshot ds : dataSnapshot.getChildren()) {
-                            final LatLng latLngTemp = new LatLng(ds.child("lat").getValue(Double.class), ds.child("lng").getValue(Double.class));
+                        User user = ds.getValue(User.class);
+                        if (user.name != user_name) {
+                            final LatLng latLngTemp = new LatLng(user.lat, user.lng);
                             mMap.addMarker(new MarkerOptions()
                                     .icon(bitmapDescriptorFromVector(UserLocationMainActivity.this, R.drawable.friends_marker))
                                     .position(latLngTemp)
-                                    .title(ds.child("name").getValue(String.class) +  " " + ds.child("surname").getValue(String.class) + " - Uzaklık: " + distanceCalculator(latLngTemp, latLngUser)));
+                                    .title(user.name + " " + user.surname + getResources().getString(R.string.user_location_distance) + calculateDistance(latLngTemp, latLngUser)));
+                            if (Math.round(SphericalUtil.computeDistanceBetween(latLngTemp, latLngUser)) < 500) {
+                                sendToChannel1(user.name + " " + user.surname, user.phoneNumber);
+                            }
+                        }
                     }
                 }
             }
@@ -286,15 +304,31 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         });
     }
 
+    //Calculates distance between two GPS coordinates.
+    private String calculateDistance(LatLng b, LatLng a) {
+        double distance = SphericalUtil.computeDistanceBetween(b, a);
+        if (distance < 1000)
+            return Math.round(distance) + getResources().getString(R.string.user_location_meter);
+        else
+            return Math.round(distance / 1000) + getResources().getString(R.string.user_location_km);
+    }
+
     // Fetches information of current user.
     private void currentUserInformation(DatabaseReference reference){
         //Retrieving user information from database.
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                tv_username.setText(dataSnapshot.child(user_uid).child("name").getValue(String.class)  + " " + dataSnapshot.child(user_uid).child("surname").getValue(String.class));
-                tv_user_email.setText(dataSnapshot.child(user_uid).child("email").getValue(String.class));
-                Picasso.get().load(dataSnapshot.child(user_uid).child("imageUrl").getValue(String.class)).into(iv_user_image);
+                if (dataSnapshot.exists()) {
+                    User user = dataSnapshot.child(user_uid).getValue(User.class);
+                    tv_username.setText(user.name + " " + user.surname);
+                    tv_user_email.setText(user.email);
+                    Picasso.get().load(user.imageUrl).into(iv_user_image);
+                } else {
+                    tv_username.setText(getResources().getString(R.string.error));
+                    tv_user_email.setText(getResources().getString(R.string.error));
+                    Picasso.get().load(R.drawable.defaultprofile).into(iv_user_image);
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -303,67 +337,57 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     }
 
     //Changes NavigationView - SideMenu items.
-    private void setMenuItem(DatabaseReference refMenuItem, final NavigationView navView) {
+    private void setMenuItems(DatabaseReference refMenuItem, final NavigationView navView) {
         Menu menu = navView.getMenu();
         menu.clear();
-        menu.add(R.string.my_location).setIcon(R.drawable.my_location).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) { moveToCurrentLocation(latLngUser);return true; }});
-        menu.add(R.string.get_invite_code).setIcon(R.drawable.copy_clipboard).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        SubMenu myMenu = menu.addSubMenu(R.string.user_me);
+        myMenu.add(getResources().getString(R.string.user_get_invite_code)).setIcon(R.drawable.copy_clipboard).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) { getMyInviteCode();return true; }});
-        menu.add(R.string.share_on_whatsApp).setIcon(R.drawable.share_on_whatsapp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        myMenu.add(getResources().getString(R.string.user_gps_whatsApp)).setIcon(R.drawable.share_on_whatsapp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) { shareOnWhatsApp();return true; }});
-        menu.add(R.string.sign_out).setIcon(R.drawable.sign_out).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        myMenu.add(getResources().getString(R.string.user_sign_out)).setIcon(R.drawable.sign_out).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) { signOut();return true; }});
 
-        final Menu sideMenu = menu.addSubMenu("Çevrimiçi Kullanıcılar");
+        final Menu sideMenu = menu.addSubMenu(getResources().getString(R.string.user_online_users));
         Query query = refMenuItem.orderByChild("isSharing").equalTo(true);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     for(final DataSnapshot ds : dataSnapshot.getChildren()){
-                        sideMenu.add(ds.child("name").getValue(String.class) + " " + ds.child("surname").getValue(String.class))
-                                .setIcon(R.drawable.explore).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                                    @Override
-                                    public boolean onMenuItemClick(MenuItem item) {
-                                        LatLng latLngTemp = new LatLng(ds.child("lat").getValue(Double.class), ds.child("lng").getValue(Double.class));
-                                        moveToCurrentLocation(latLngTemp);
-                                        onNavigationItemSelected(item);
-                                        return true;
-                                    }
-                                });
+                        final User user = ds.getValue(User.class);
+                        if (user.name != user_name) {
+                            sideMenu.add(user.name + " " + user.surname)
+                                    .setIcon(R.drawable.explore).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                @Override
+                                public boolean onMenuItemClick(MenuItem item) {
+                                    LatLng latLngTemp = new LatLng(user.lat, user.lng);
+                                    moveToCurrentLocation(latLngTemp);
+                                    onNavigationItemSelected(item);
+                                    return true;
+                                }
+                            });
+                        }
                     }
-                } else {
-                    sideMenu.add("Şu anda hiç kimse çevrimiçi değil.");
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
-    }
-
-    //Calculates distance between two GPS coordinates.
-    private String distanceCalculator(LatLng b, LatLng a){
-        double distance = SphericalUtil.computeDistanceBetween(b,a);
-        if(distance < 1000) return distance + " metre.";
-        else return Math.round(distance / 1000) + " km.";
     }
 
     //Action when user pressed return button.
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(UserLocationMainActivity.this);
-        builder.setTitle("Uyarı");
+        builder.setTitle(getResources().getString(R.string.user_exit_alert_title));
         builder.setIcon(R.drawable.sign_out);
-        builder.setMessage("Uygulamadan çıkmak istiyor musunuz?");
-        builder.setNegativeButton("Hayır", null);
-        builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
+        builder.setMessage(getResources().getString(R.string.user_exit_alert_text));
+        builder.setNegativeButton(getResources().getString(R.string.user_exit_alert_negative_text), null);
+        builder.setPositiveButton(getResources().getString(R.string.user_exit_alert_positive_text), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         reference.child(user_uid).child("isSharing").setValue(false);
@@ -373,8 +397,6 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     }
 
     private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable background = ContextCompat.getDrawable(context, R.drawable.ic_map_pin_filled_blue_48dp);
-        background.setBounds(0, 0, background.getIntrinsicWidth(), background.getIntrinsicHeight());
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -383,4 +405,87 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    private boolean checkGPSConnection() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            return true;
+        else {
+            alertGPS();
+            return false;
+        }
+    }
+
+    private boolean checkInternetConnection() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnectedOrConnecting())
+            return true;
+        else {
+            alertInternet();
+            return false;
+        }
+    }
+
+    private void alertInternet() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false)
+                .setTitle(getResources().getString(R.string.invite_code_alert_title))
+                .setIcon(R.drawable.wifi_off)
+                .setMessage(getResources().getString(R.string.register_alert_text))
+                .setNegativeButton(getResources().getString(R.string.register_alert_negative_text), null)
+                .setPositiveButton(getResources().getString(R.string.register_alert_positive_text), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        UserLocationMainActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                    }
+                })
+                .show();
+    }
+
+    private void alertGPS() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(getResources().getString(R.string.user_location_alert_text))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.user_location_alert_positive_text), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(callGPSSettingIntent);
+                    }
+                });
+        alertDialogBuilder.setNegativeButton(getResources().getString(R.string.user_location_alert_negative_text),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
+
+    private void createNotificationChannels() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel1 = new NotificationChannel(CHANNEL_1_ID, "Channel 1", NotificationManager.IMPORTANCE_HIGH);
+            channel1.enableVibration(true);
+            channel1.setDescription("Users which are closer to me");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel1);
+        }
+    }
+
+    private void sendToChannel1(String name_surname, String phoneNumber) {
+        Intent phoneCall = new Intent(Intent.ACTION_CALL);
+        phoneCall.setData(Uri.parse("tel:" + phoneNumber));
+        PendingIntent phoneCallIntent = PendingIntent.getActivity(this, 0, phoneCall, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder myNotification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.explore)
+                .setContentTitle(name_surname + " " + getResources().getString(R.string.user_notification_title))
+                .setContentText(getResources().getString(R.string.user_notification_text))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setAutoCancel(true)
+                .addAction(R.drawable.phone, getResources().getString(R.string.user_notification_call), phoneCallIntent);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(1, myNotification.build());
+    }
 }

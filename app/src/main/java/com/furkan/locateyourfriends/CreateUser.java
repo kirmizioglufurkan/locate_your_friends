@@ -2,11 +2,14 @@ package com.furkan.locateyourfriends;
 
 public class CreateUser {
 
-    public String username,email,password,name,surname,phoneNumber,code,isSharing,lat,lng,imageUrl;
+    public String username, email, password, name, surname, phoneNumber, code, imageUrl;
+    public boolean isSharing;
+    public double lat;
+    public double lng;
 
     public void CreateUser() {}
 
-    public CreateUser(String username, String email, String password, String name, String surname, String phoneNumber, String code, String isSharing, String lat, String lng, String imageUrl) {
+    public CreateUser(String username, String email, String password, String name, String surname, String phoneNumber, String code, boolean isSharing, double lat, double lng, String imageUrl) {
         this.username = username;
         this.email = email;
         this.password = password;

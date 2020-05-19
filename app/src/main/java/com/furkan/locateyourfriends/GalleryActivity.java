@@ -1,7 +1,5 @@
 package com.furkan.locateyourfriends;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,9 +11,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.santalu.maskedittext.MaskEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -100,7 +102,7 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
 
         name = etName.getText().toString();
         surname = etSurname.getText().toString();
-        phoneNumber = etPhoneNumber.getRawText().toString();
+        phoneNumber = etPhoneNumber.getRawText();
         Animation animation = AnimationUtils.loadAnimation(this,R.anim.fade_in);
         btnGallery.startAnimation(animation);
 
@@ -113,9 +115,11 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(intent); overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left); finish();
         }
         else if (name.isEmpty() || surname.isEmpty() || phoneNumber.isEmpty()){
-            Toast.makeText(getApplicationContext(), "Lütfen tüm alanları doldurunuz.",Toast.LENGTH_SHORT).show();}
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.gallery_form_error), Toast.LENGTH_SHORT).show();
+        }
         else {
-            Toast.makeText(getApplicationContext(), "Lütfen profil resmi seçiniz.",Toast.LENGTH_SHORT).show(); }
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.gallery_profile_picture_error), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void goBack(View v){

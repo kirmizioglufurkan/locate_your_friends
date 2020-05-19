@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Neredesin</string>
+    <string name="title_activity_user_location_main">UserLocationMainActivity</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="menu_home">@string/app_name</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="home_second">Home Second</string>
+
+
+    <!--ORDER BY ACTIVITIES-->
+
+    <!--Common Strings-->
+    <string name="check_information">Comprobando su información.</string>
+    <string name="button_back">Back Button</string>
+    <string name="error">ERROR</string>
+    <!--Common Strings End-->
+
+    <!--Welcome Activity-->
+    <string name="welcome_main_text">¡Bienvenido!</string>
+    <string name="welcome_sub_text">Inicia sesión para continuar.</string>
+    <string name="welcome_button_text">Iniciar sesión</string>
+    <string name="welcome_member_text">¿No registrado?</string>
+    <string name="welcome_register_text">Registrarse.</string>
+    <!--Welcome Activity End-->
+
+    <!--Login Activity-->
+    <string name="login_main_text">Iniciar sesión</string>
+    <string name="login_email_hint">neredesin@gmail.com</string>
+    <string name="login_password_hint">* * * * * * * * * </string>
+    <string name="login_help_text">Ayuda ?</string>
+    <string name="login_button_text">Iniciar sesión</string>
+    <string name="login_member_text">¿No registrado?</string>
+    <string name="login_register_text">Registrarse.</string>
+
+    <string name="login_field_error">El correo electrónico y la contraseña no deben ser nulos.</string>
+    <string name="login_wrong_info">Correo o contraseña equivocada.</string>
+    <!--Login Activity End-->
+
+    <!--Register Activity-->
+    <string name="register_main_text">Registrarse</string>
+    <string name="register_username_hint">Nombre de usuario</string>
+    <string name="register_email_hint">neredesin@gmail.com</string>
+    <string name="register_password_hint">* * * * * * * * *</string>
+    <string name="register_button_text">Siguiente</string>
+
+    <string name="register_password_error">La contraseña debe tener más de 6 caracteres.</string>
+    <string name="register_email_error">Este correo electrónico ya está registrado.</string>
+    <string name="register_form_error">Por favor complete todos los campos de texto.</string>
+
+    <string name="register_alert_title">¡Problema de conexión!</string>
+    <string name="register_alert_text">Habilite su conexión a Internet para seguir registrándose. </string>
+    <string name="register_alert_positive_text">Ir a la configuración de conexión</string>
+    <string name="register_alert_negative_text">Entendido</string>
+    <!--Register Activity End-->
+
+    <!--Gallery Activity-->
+    <string name="gallery_profile_text">Perfil</string>
+    <string name="gallery_image_text">Elija una imagen de perfil del cuadro debajo de este texto.</string>
+    <string name="gallery_name_hint">Nombre</string>
+    <string name="gallery_surname_hint">Apellido</string>
+    <string name="gallery_phone_hint">Número de teléfono</string>
+    <string name="gallery_button_text">Próximo</string>
+
+    <string name="gallery_form_error">Por favor llena todos los espacios.</string>
+    <string name="gallery_profile_picture_error">Por favor, elija una foto de perfil.</string>
+    <!--Gallery Activity End-->
+
+    <!--Invite Code Activity-->
+    <string name="invite_code_text">Registro Completo</string>
+    <string name="invite_code_sub_text">El registro se completará con esta identificación única.</string>
+    <string name="invite_code_code_text">* * * * * * * * *</string>
+    <string name="invite_code_button_text">Registrarse</string>
+
+    <string name="invite_code_progress">Guardando información.</string>
+    <string name="invite_code_successful">Registrado correctamente.</string>
+    <string name="invite_code_failed">Se produjo un error al registrarse.</string>
+
+    <string name="invite_code_alert_title">¡Problema de conexión!</string>
+    <string name="invite_code_alert_text">Habilite su conexión a Internet para completar el registro.</string>
+    <string name="invite_code_alert_positive_text">Ir a la configuración de conexión</string>
+    <string name="invite_code_alert_negative_text">Entendido</string>
+    <!--Invite Code Activity End-->
+
+    <!--User Location Main Activity-->
+    <string name="user_me">Mi Página</string>
+    <string name="user_get_invite_code">Copiar mi código</string>
+    <string name="user_invite_code_copied">Copió su código al portapapeles.</string>
+    <string name="user_gps_whatsApp">Compartir Ubicación en WhatsApp</string>
+    <string name="user_gps_whatsapp_text">Estoy aqui ahora: https://www.google.com/maps/@</string>
+    <string name="user_sign_out">Desconectar</string>
+    <string name="action_location_settings">Configuraciones GPS</string>
+    <string name="user_online_users">Usuarios en linea.</string>
+
+    <string name="user_location_here">Estás aquí.</string>
+    <string name="user_location_distance"> - distancia a ti: </string>
+    <string name="user_location_meter"> medidor.</string>
+    <string name="user_location_km"> km.</string>
+    <string name="user_location_error">Tu ubicación no fue encontrada.</string>
+    <string name="user_location_alert_text">Tu ubicación está deshabilitada. ¿Quieres habilitar?</string>
+    <string name="user_location_alert_positive_text">Configuraciones GPS</string>
+    <string name="user_location_alert_negative_text">Entendido</string>
+
+    <string name="user_notification_title">Cerca de Usted!</string>
+    <string name="user_notification_text">Haga clic para marcar, o estreche su mano :)</string>
+    <string name="user_notification_call">Marcar</string>
+
+    <string name="user_exit_alert_title">Salir de la Aplicación</string>
+    <string name="user_exit_alert_text">¿Quieres salir de la aplicación?</string>
+    <string name="user_exit_alert_positive_text">Salir</string>
+    <string name="user_exit_alert_negative_text">Regresa</string>
+    <!--User Location Main Activity End-->
+
+</resources>

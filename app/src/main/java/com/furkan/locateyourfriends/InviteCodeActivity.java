@@ -1,9 +1,5 @@
 package com.furkan.locateyourfriends;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +14,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -31,7 +31,10 @@ import com.google.firebase.storage.UploadTask;
 
 public class InviteCodeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String username, email, password, name, surname, phoneNumber, date, isSharing, code, userId; private Uri imageUri;
+    private String username, email, password, name, surname, phoneNumber, date, code, userId;
+    private Uri imageUri;
+    private boolean isSharing = false;
+    private double lat = 0;
     private FirebaseAuth auth; private FirebaseUser user; private DatabaseReference reference; private StorageReference storageReference;
     private ProgressDialog dialog;
     private TextView tvInviteCode; private Button btnInviteCode;
@@ -56,7 +59,6 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
             surname = intent.getStringExtra("surname");
             phoneNumber = intent.getStringExtra("phoneNumber");
             date = intent.getStringExtra("date");
-            isSharing = intent.getStringExtra("isSharing");
             code = intent.getStringExtra("code");
             imageUri = intent.getParcelableExtra("imageUri");
             tvInviteCode.setText(code);
@@ -74,18 +76,18 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
         if(activeInfo != null && activeInfo.isConnected()){
-            dialog.setMessage("Bilgileriniz kaydediliyor...");
+            dialog.setMessage(getResources().getString(R.string.invite_code_progress));
             dialog.setCancelable(false);
             dialog.show();
             registerUser();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(InviteCodeActivity.this);
             builder.setCancelable(false)
-                    .setTitle(R.string.invite_code_alert_title)
+                    .setTitle(getResources().getString(R.string.invite_code_alert_title))
                     .setIcon(R.drawable.wifi_off)
-                    .setMessage(R.string.register_alert_text)
-                    .setNegativeButton(R.string.register_alert_negative_text,null)
-                    .setPositiveButton(R.string.register_alert_positive_text, new DialogInterface.OnClickListener() {
+                    .setMessage(getResources().getString(R.string.register_alert_text))
+                    .setNegativeButton(getResources().getString(R.string.register_alert_negative_text), null)
+                    .setPositiveButton(getResources().getString(R.string.register_alert_positive_text), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) { InviteCodeActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)); }})
                     .show();}
@@ -97,7 +99,7 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
                     //Insert values in realtime database
-                    CreateUser createUser = new CreateUser(username,email,password,name,surname, phoneNumber, code,"false","na","na","na");
+                    CreateUser createUser = new CreateUser(username, email, password, name, surname, phoneNumber, code, false, 0, 0, "na");
                     user = auth.getCurrentUser(); userId = user.getUid();
                     reference.child(userId).setValue(createUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -116,7 +118,7 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
                                                     if (task.isSuccessful()) {
                                                         reference.child(user.getUid()).child("code").setValue(code);
                                                         dialog.dismiss();
-                                                        Toast.makeText(getApplicationContext(), R.string.invite_code_successful, Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.invite_code_successful), Toast.LENGTH_SHORT).show();
                                                         Intent intent = new Intent(InviteCodeActivity.this, LoginActivity.class);
                                                         intent.putExtra("email",email);
                                                         startActivity(intent);
@@ -129,7 +131,7 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
                                 });
                             } else {
                                 dialog.dismiss();
-                                Toast.makeText(getApplicationContext(),R.string.invite_code_failed,Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.invite_code_failed), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

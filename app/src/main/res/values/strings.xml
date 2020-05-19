@@ -14,6 +14,7 @@
     <!--Common Strings-->
     <string name="check_information">Bilgileriniz kontrol ediliyor...</string>
     <string name="button_back">Back Button</string>
+    <string name="error">HATA</string>
     <!--Common Strings End-->
 
     <!--Welcome Activity-->
@@ -32,6 +33,9 @@
     <string name="login_button_text">Giriş Yap</string>
     <string name="login_member_text">Henüz bir kaydınız yok mu?</string>
     <string name="login_register_text">Üye olun.</string>
+
+    <string name="login_field_error">E-Mail adresi ve şifre boş bırakılamaz!</string>
+    <string name="login_wrong_info">Yanlış e-mail veya şifre girdiniz.</string>
     <!--Login Activity End-->
 
     <!--Register Activity-->
@@ -39,9 +43,9 @@
     <string name="register_username_hint">Kullanıcı Adınız</string>
     <string name="register_email_hint">neredesin@gmail.com</string>
     <string name="register_password_hint">* * * * * * * * *</string>
-    <string name="register_image_text">Lütfen aşağıdaki kutucuktan profil resmi seçiniz.</string>
+    <string name="register_button_text">Devam Et</string>
 
-    <string name="progress_text">Bilgileriniz kontrol ediliyor.</string>
+
     <string name="register_password_error">Şifre minimum 6 karakterden oluşmalıdır.</string>
     <string name="register_email_error">Bu e-mail zaten kayıtlı.</string>
     <string name="register_form_error">Lütfen tüm alanları doldurunuz.</string>
@@ -53,11 +57,14 @@
     <!--Register Activity End-->
 
     <!--Gallery Activity-->
-    <string name="register_profile_text">Profil</string>
-    <string name="register_name_hint">Adınız</string>
-    <string name="register_surname_hint">Soyadınız</string>
-    <string name="register_phone_hint">Cep Telefonunuz</string>
-    <string name="register_button_text">Devam Et</string>
+    <string name="gallery_profile_text">Profil</string>
+    <string name="gallery_image_text">Lütfen aşağıdaki kutucuktan profil resmi seçiniz.</string>
+    <string name="gallery_name_hint">Adınız</string>
+    <string name="gallery_surname_hint">Soyadınız</string>
+    <string name="gallery_phone_hint">Cep Telefonunuz</string>
+    <string name="gallery_button_text">Devam Et</string>
+    <string name="gallery_form_error">Lütfen tüm alanları doldurunuz.</string>
+    <string name="gallery_profile_picture_error">Lütfen profil resmi seçiniz.</string>
     <!--Gallery Activity End-->
 
     <!--Invite Code Activity-->
@@ -66,6 +73,7 @@
     <string name="invite_code_code_text">* * * * * * * * *</string>
     <string name="invite_code_button_text">Kayıt Ol</string>
 
+    <string name="invite_code_progress">Bilgileriniz kaydediliyor...</string>
     <string name="invite_code_successful">Başarıyla kaydedildi.</string>
     <string name="invite_code_failed">Kayıt işlemi sırasında bir hata oluştu.</string>
 
@@ -76,12 +84,33 @@
     <!--Invite Code Activity End-->
 
     <!--User Location Main Activity-->
-    <string name="my_location">Konumuma Git</string>
-    <string name="get_invite_code">Kodumu Kopyala</string>
-    <string name="share_on_whatsApp">Konumumu Whatsapp"'"ta Paylaş </string>
-    <string name="sign_out">Oturumu Kapat</string>
+    <string name="user_me">Ben</string>
+    <string name="user_get_invite_code">Kodumu Kopyala</string>
+    <string name="user_invite_code_copied">Kodunuz panoya kopyalandı.</string>
+    <string name="user_gps_whatsApp">Konumumu Whatsapp"'"ta Paylaş </string>
+    <string name="user_gps_whatsapp_text">Şu an buradayım: https://www.google.com/maps/@</string>
+    <string name="user_sign_out">Oturumu Kapat</string>
     <string name="action_location_settings">GPS Ayarları</string>
-    <string name="action_exit_program">Programdan Çık</string>
+    <string name="user_online_users">Çevrimiçi Kullanıcılar</string>
+
+    <string name="user_location_here">Buradasınız.</string>
+    <string name="user_location_distance">- size uzaklığı: </string>
+    <string name="user_location_meter"> metre.</string>
+    <string name="user_location_km"> km.</string>
+    <string name="user_location_error">Konumunuz bulunamadı.</string>
+    <string name="user_location_alert_text">Konumunuz kapalı. Etkinleştirmek ister misiniz?</string>
+    <string name="user_location_alert_positive_text">Konum Ayarlarına Gidin</string>
+    <string name="user_location_alert_negative_text">Anladım</string>
+
+    <string name="user_notification_title"> Yakınınızda!</string>
+    <string name="user_notification_text">Aramak için tıklayın, veya ona el sallayın :)</string>
+    <string name="user_notification_call">Ara</string>
+
+    <string name="user_exit_alert_title">Çıkış Yap</string>
+    <string name="user_exit_alert_text">Uygulamadan çıkmak istiyor musunuz?</string>
+    <string name="user_exit_alert_positive_text">Çıkış Yap</string>
+    <string name="user_exit_alert_negative_text">Geri Dön</string>
+
     <!--User Location Main Activity End-->
 
 </resources>

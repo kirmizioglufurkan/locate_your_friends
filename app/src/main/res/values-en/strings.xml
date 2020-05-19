@@ -1,0 +1,115 @@
+<resources>
+
+    <string name="app_name">Neredesin</string>
+    <string name="title_activity_user_location_main">UserLocationMainActivity</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="menu_home">@string/app_name</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="home_second">Home Second</string>
+
+
+    <!--ORDER BY ACTIVITIES-->
+
+    <!--Common Strings-->
+    <string name="check_information">Checking your information.</string>
+    <string name="button_back">Back Button</string>
+    <string name="error">ERROR</string>
+    <!--Common Strings End-->
+
+    <!--Welcome Activity-->
+    <string name="welcome_main_text">Welcome</string>
+    <string name="welcome_sub_text">Please login for continue.</string>
+    <string name="welcome_button_text">Login</string>
+    <string name="welcome_member_text">Not registered?</string>
+    <string name="welcome_register_text">Register.</string>
+    <!--Welcome Activity End-->
+
+    <!--Login Activity-->
+    <string name="login_main_text">Login</string>
+    <string name="login_email_hint">neredesin@gmail.com</string>
+    <string name="login_password_hint">* * * * * * * * * </string>
+    <string name="login_help_text">Help ?</string>
+    <string name="login_button_text">Login</string>
+    <string name="login_member_text">Not registered?</string>
+    <string name="login_register_text">Register.</string>
+
+    <string name="login_field_error">Email and password are mustn"'"t be null.</string>
+    <string name="login_wrong_info">Wrong email or password.</string>
+    <!--Login Activity End-->
+
+    <!--Register Activity-->
+    <string name="register_main_text">Register</string>
+    <string name="register_username_hint">Username</string>
+    <string name="register_email_hint">neredesin@gmail.com</string>
+    <string name="register_password_hint">* * * * * * * * *</string>
+    <string name="register_button_text">Next</string>
+
+    <string name="register_password_error">Password must be longer than 6 characters.</string>
+    <string name="register_email_error">This e-mail is already registered.</string>
+    <string name="register_form_error">Please fill all text fields.</string>
+
+    <string name="register_alert_title">Connection Problem!</string>
+    <string name="register_alert_text">Please enable your internet connection in order to keep registering.</string>
+    <string name="register_alert_positive_text">Go To Connection Settings</string>
+    <string name="register_alert_negative_text">Got It</string>
+    <!--Register Activity End-->
+
+    <!--Gallery Activity-->
+    <string name="gallery_profile_text">Profile</string>
+    <string name="gallery_image_text">Please choose a profile image from box below this text.</string>
+    <string name="gallery_name_hint">Name</string>
+    <string name="gallery_surname_hint">Surname</string>
+    <string name="gallery_phone_hint">Phone Number</string>
+    <string name="gallery_button_text">Next</string>
+
+    <string name="gallery_form_error">Please fill all fields.</string>
+    <string name="gallery_profile_picture_error">Please choose a profile picture.</string>
+    <!--Gallery Activity End-->
+
+    <!--Invite Code Activity-->
+    <string name="invite_code_text">Complete Register</string>
+    <string name="invite_code_sub_text">Registering will be completed with this unique id.</string>
+    <string name="invite_code_code_text">* * * * * * * * *</string>
+    <string name="invite_code_button_text">Register</string>
+
+    <string name="invite_code_progress">Saving information.</string>
+    <string name="invite_code_successful">Registered successfully.</string>
+    <string name="invite_code_failed">An error occurred while registering.</string>
+
+    <string name="invite_code_alert_title">Connection Problem!</string>
+    <string name="invite_code_alert_text">Please enable your internet connection in order to complete registering.</string>
+    <string name="invite_code_alert_positive_text">Go To Connection Settings</string>
+    <string name="invite_code_alert_negative_text">Got It</string>
+    <!--Invite Code Activity End-->
+
+    <!--User Location Main Activity-->
+    <string name="user_me">My Page</string>
+    <string name="user_get_invite_code">Copy My Code</string>
+    <string name="user_invite_code_copied">Copied your code to clipboard.</string>
+    <string name="user_gps_whatsApp">Share Location On WhatsApp</string>
+    <string name="user_gps_whatsapp_text">I"'"m here now: https://www.google.com/maps/@</string>
+    <string name="user_sign_out">Sign Out</string>
+    <string name="action_location_settings">GPS Settings</string>
+    <string name="user_online_users">Online Users</string>
+
+    <string name="user_location_here">You"'"re here.</string>
+    <string name="user_location_distance"> - distance to you: </string>
+    <string name="user_location_meter"> meters.</string>
+    <string name="user_location_km"> km.</string>
+    <string name="user_location_error">Your location was not found.</string>
+    <string name="user_location_alert_text">Your location is disabled. Do you want to enabled?</string>
+    <string name="user_location_alert_positive_text">Go To GPS Settings</string>
+    <string name="user_location_alert_negative_text">Got It.</string>
+
+    <string name="user_notification_title"> Near You!</string>
+    <string name="user_notification_text">Click for dial, or shake your hand :)</string>
+    <string name="user_notification_call">Call</string>
+
+    <string name="user_exit_alert_title">Exit Application</string>
+    <string name="user_exit_alert_text">Do you want to exit app?</string>
+    <string name="user_exit_alert_positive_text">Exit</string>
+    <string name="user_exit_alert_negative_text">Go Back</string>
+    <!--User Location Main Activity End-->
+
+</resources>
