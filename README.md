@@ -1,2 +1,2 @@
-# locate_your_friends
-Arkadaşlarının konumunu bul.
+# Neredesin
+Arkadaşlarının konumunu bulma uygulaması.
