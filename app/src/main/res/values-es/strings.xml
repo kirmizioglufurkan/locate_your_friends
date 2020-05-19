@@ -13,7 +13,7 @@
     <!--ORDER BY ACTIVITIES-->
 
     <!--Common Strings-->
-    <string name="check_information">Comprobando su información.</string>
+    <string name="register_check_information">Comprobando su información.</string>
     <string name="button_back">Back Button</string>
     <string name="error">ERROR</string>
     <!--Common Strings End-->
@@ -22,7 +22,7 @@
     <string name="welcome_main_text">¡Bienvenido!</string>
     <string name="welcome_sub_text">Inicia sesión para continuar.</string>
     <string name="welcome_button_text">Iniciar sesión</string>
-    <string name="welcome_member_text">¿No registrado?</string>
+    <string name="welcome_member_text">¿No es un miembro?</string>
     <string name="welcome_register_text">Registrarse.</string>
     <!--Welcome Activity End-->
 
@@ -35,20 +35,30 @@
     <string name="login_member_text">¿No registrado?</string>
     <string name="login_register_text">Registrarse.</string>
 
-    <string name="login_field_error">El correo electrónico y la contraseña no deben ser nulos.</string>
+    <string name="login_email_null_error">E-Mail adresi boş bırakılamaz!</string>
+    <string name="login_password_null_error">Parola boş bırakılamaz!</string>
     <string name="login_wrong_info">Correo o contraseña equivocada.</string>
     <!--Login Activity End-->
 
     <!--Register Activity-->
     <string name="register_main_text">Registrarse</string>
     <string name="register_username_hint">Nombre de usuario</string>
-    <string name="register_email_hint">neredesin@gmail.com</string>
-    <string name="register_password_hint">* * * * * * * * *</string>
+    <string name="register_email_hint">Dirección de correo electrónico</string>
+    <string name="register_password_hint">Contraseña</string>
+    <string name="register_password_confirm_hint">Parolayı Yinele</string>
     <string name="register_button_text">Siguiente</string>
 
-    <string name="register_password_error">La contraseña debe tener más de 6 caracteres.</string>
-    <string name="register_email_error">Este correo electrónico ya está registrado.</string>
-    <string name="register_form_error">Por favor complete todos los campos de texto.</string>
+    <string name="register_username_null_error">Kullanıcı adı boş bırakılamaz!</string>
+    <string name="register_username_min_char_error">Kullanıcı adı en az 5 karakter olmalıdır.</string>
+    <string name="register_username_max_char_error">Kullanıcı adı 15 karakterden uzun olamaz.</string>
+
+    <string name="register_email_null_error">Email adresi boş bırakılamaz!</string>
+    <string name="register_email_wrong_error">Girilen mail adresi geçerli değil!</string>
+
+    <string name="register_password_null_error">La contraseña debe tener más de 6 caracteres.</string>
+    <string name="register_password_confirm_null_error">Şifre tekrarlama alanı boş bırakılamaz.</string>
+    <string name="register_password_confirm_not_match_error">Girilen parolalar aynı değil.</string>
+    <string name="register_email_duplicate_error">Este correo electrónico ya está registrado.</string>
 
     <string name="register_alert_title">¡Problema de conexión!</string>
     <string name="register_alert_text">Habilite su conexión a Internet para seguir registrándose. </string>
@@ -64,8 +74,11 @@
     <string name="gallery_phone_hint">Número de teléfono</string>
     <string name="gallery_button_text">Próximo</string>
 
-    <string name="gallery_form_error">Por favor llena todos los espacios.</string>
     <string name="gallery_profile_picture_error">Por favor, elija una foto de perfil.</string>
+    <string name="gallery_name_null_error">Por favor llena todos los espacios.</string>
+    <string name="gallery_surname_null_error">Soyad alanı boş bırakılamaz.</string>
+    <string name="gallery_phone_null_error">Telefon numarası boş bırakılamaz!</string>
+    <string name="gallery_phone_wrong_error">Telefon numarası geçerli bir numara değil!</string>
     <!--Gallery Activity End-->
 
     <!--Invite Code Activity-->
@@ -89,15 +102,15 @@
     <string name="user_get_invite_code">Copiar mi código</string>
     <string name="user_invite_code_copied">Copió su código al portapapeles.</string>
     <string name="user_gps_whatsApp">Compartir Ubicación en WhatsApp</string>
-    <string name="user_gps_whatsapp_text">Estoy aqui ahora: https://www.google.com/maps/@</string>
+    <string name="user_gps_whatsApp_text">Estoy aqui ahora: https://www.google.com/maps/@</string>
     <string name="user_sign_out">Desconectar</string>
     <string name="action_location_settings">Configuraciones GPS</string>
     <string name="user_online_users">Usuarios en linea.</string>
 
     <string name="user_location_here">Estás aquí.</string>
-    <string name="user_location_distance"> - distancia a ti: </string>
-    <string name="user_location_meter"> medidor.</string>
-    <string name="user_location_km"> km.</string>
+    <string name="user_location_distance">- distancia a ti: </string>
+    <string name="user_location_meter">medidor.</string>
+    <string name="user_location_km">km.</string>
     <string name="user_location_error">Tu ubicación no fue encontrada.</string>
     <string name="user_location_alert_text">Tu ubicación está deshabilitada. ¿Quieres habilitar?</string>
     <string name="user_location_alert_positive_text">Configuraciones GPS</string>

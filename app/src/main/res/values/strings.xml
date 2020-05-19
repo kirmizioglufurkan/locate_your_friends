@@ -12,7 +12,6 @@
     <!--ORDER BY ACTIVITIES-->
 
     <!--Common Strings-->
-    <string name="check_information">Bilgileriniz kontrol ediliyor...</string>
     <string name="button_back">Back Button</string>
     <string name="error">HATA</string>
     <!--Common Strings End-->
@@ -34,25 +33,36 @@
     <string name="login_member_text">Henüz bir kaydınız yok mu?</string>
     <string name="login_register_text">Üye olun.</string>
 
-    <string name="login_field_error">E-Mail adresi ve şifre boş bırakılamaz!</string>
+    <string name="login_email_null_error">E-Mail adresi boş bırakılamaz!</string>
+    <string name="login_password_null_error">Parola boş bırakılamaz!</string>
     <string name="login_wrong_info">Yanlış e-mail veya şifre girdiniz.</string>
     <!--Login Activity End-->
 
     <!--Register Activity-->
     <string name="register_main_text">Kayıt Ol</string>
-    <string name="register_username_hint">Kullanıcı Adınız</string>
-    <string name="register_email_hint">neredesin@gmail.com</string>
-    <string name="register_password_hint">* * * * * * * * *</string>
+    <string name="register_username_hint">Kullanıcı Adı</string>
+    <string name="register_email_hint">Email Adresi</string>
+    <string name="register_password_hint">Parola</string>
+    <string name="register_password_confirm_hint">Parolayı Yinele</string>
     <string name="register_button_text">Devam Et</string>
 
+    <string name="register_username_null_error">Kullanıcı adı boş bırakılamaz!</string>
+    <string name="register_username_min_char_error">Kullanıcı adı en az 5 karakter olmalıdır.</string>
+    <string name="register_username_max_char_error">Kullanıcı adı 15 karakterden uzun olamaz.</string>
 
-    <string name="register_password_error">Şifre minimum 6 karakterden oluşmalıdır.</string>
-    <string name="register_email_error">Bu e-mail zaten kayıtlı.</string>
-    <string name="register_form_error">Lütfen tüm alanları doldurunuz.</string>
+    <string name="register_email_null_error">Email adresi boş bırakılamaz!</string>
+    <string name="register_email_wrong_error">Girilen mail adresi geçerli değil!</string>
+    <string name="register_email_duplicate_error">Bu e-mail zaten kayıtlı.</string>
+
+    <string name="register_password_null_error">Şifre alanı boş bırakılamaz.</string>
+    <string name="register_password_confirm_null_error">Şifre tekrarlama alanı boş bırakılamaz.</string>
+    <string name="register_password_confirm_not_match_error">Girilen parolalar aynı değil.</string>
+
+    <string name="register_check_information">Bilgileriniz kontrol ediliyor...</string>
 
     <string name="register_alert_title">Bağlantı Sorunu!</string>
     <string name="register_alert_text">Kayıt işlemini tamamlayabilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
-    <string name="register_alert_positive_text">İnternet Ayarlarına Git</string>
+    <string name="register_alert_positive_text">İnternet Ayarlarına Gidin</string>
     <string name="register_alert_negative_text">Anladım</string>
     <!--Register Activity End-->
 
@@ -63,8 +73,12 @@
     <string name="gallery_surname_hint">Soyadınız</string>
     <string name="gallery_phone_hint">Cep Telefonunuz</string>
     <string name="gallery_button_text">Devam Et</string>
-    <string name="gallery_form_error">Lütfen tüm alanları doldurunuz.</string>
     <string name="gallery_profile_picture_error">Lütfen profil resmi seçiniz.</string>
+
+    <string name="gallery_name_null_error">Ad alanı boş bırakılamaz.</string>
+    <string name="gallery_surname_null_error">Soyad alanı boş bırakılamaz.</string>
+    <string name="gallery_phone_null_error">Telefon numarası boş bırakılamaz!</string>
+    <string name="gallery_phone_wrong_error">Telefon numarası geçerli bir numara değil!</string>
     <!--Gallery Activity End-->
 
     <!--Invite Code Activity-->
@@ -88,15 +102,15 @@
     <string name="user_get_invite_code">Kodumu Kopyala</string>
     <string name="user_invite_code_copied">Kodunuz panoya kopyalandı.</string>
     <string name="user_gps_whatsApp">Konumumu Whatsapp"'"ta Paylaş </string>
-    <string name="user_gps_whatsapp_text">Şu an buradayım: https://www.google.com/maps/@</string>
+    <string name="user_gps_whatsApp_text">Şu an buradayım: https://www.google.com/maps/@</string>
     <string name="user_sign_out">Oturumu Kapat</string>
     <string name="action_location_settings">GPS Ayarları</string>
     <string name="user_online_users">Çevrimiçi Kullanıcılar</string>
 
     <string name="user_location_here">Buradasınız.</string>
-    <string name="user_location_distance">- size uzaklığı: </string>
-    <string name="user_location_meter"> metre.</string>
-    <string name="user_location_km"> km.</string>
+    <string name="user_location_distance"> - size uzaklığı: </string>
+    <string name="user_location_meter">metre.</string>
+    <string name="user_location_km">km.</string>
     <string name="user_location_error">Konumunuz bulunamadı.</string>
     <string name="user_location_alert_text">Konumunuz kapalı. Etkinleştirmek ister misiniz?</string>
     <string name="user_location_alert_positive_text">Konum Ayarlarına Gidin</string>

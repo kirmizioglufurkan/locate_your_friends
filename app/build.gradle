@@ -49,6 +49,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:19.1.1'
     implementation 'com.google.maps.android:android-maps-utils:1.2.1'
 
+    //Material search bar!
+    implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

@@ -33,8 +33,6 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
 
     private String username, email, password, name, surname, phoneNumber, date, code, userId;
     private Uri imageUri;
-    private boolean isSharing = false;
-    private double lat = 0;
     private FirebaseAuth auth; private FirebaseUser user; private DatabaseReference reference; private StorageReference storageReference;
     private ProgressDialog dialog;
     private TextView tvInviteCode; private Button btnInviteCode;

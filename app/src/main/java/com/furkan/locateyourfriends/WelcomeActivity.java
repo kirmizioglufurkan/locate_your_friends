@@ -26,7 +26,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         btnLogin = findViewById(R.id.btn_welcome_login);
-        tvRegister = findViewById(R.id.tv_welcome_register);
+        tvRegister = findViewById(R.id.tv_welcome_goToRegister);
         btnLogin.setOnClickListener(this);
         tvRegister.setOnClickListener(this);
         permissionManager = new PermissionManager() {};
@@ -41,7 +41,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.btn_welcome_login: {
                 btnLogin.startAnimation(animation);
                 startActivity(new Intent(WelcomeActivity.this, LoginActivity.class)); finish(); break;}
-            case R.id.tv_welcome_register: {
+            case R.id.tv_welcome_goToRegister: {
                 startActivity(new Intent(WelcomeActivity.this, RegisterActivity.class)); finish(); break;}
             default: break;
         }

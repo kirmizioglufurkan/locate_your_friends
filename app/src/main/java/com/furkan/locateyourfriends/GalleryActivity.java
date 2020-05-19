@@ -3,7 +3,9 @@ package com.furkan.locateyourfriends;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.santalu.maskedittext.MaskEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -28,8 +31,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class GalleryActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String username,email,password, name, surname, phoneNumber;
+    private TextInputLayout nameLayout, surnameLayout, phoneNumberLayout;
     private EditText etName, etSurname;
-    private MaskEditText etPhoneNumber;
+    private MaskEditText masketPhoneNumber;
     private CircleImageView circleImageView; private Uri resultUri;
     private Button btnGallery; private ImageView imgBack;
 
@@ -39,9 +43,12 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_gallery);
         circleImageView = findViewById(R.id.img_gallery_profile);
 
+        nameLayout = findViewById(R.id.til_gallery_name);
+        surnameLayout = findViewById(R.id.til_gallery_surname);
+        phoneNumberLayout = findViewById(R.id.til_gallery_phone);
         etName = findViewById(R.id.et_gallery_name);
         etSurname = findViewById(R.id.et_gallery_surname);
-        etPhoneNumber = findViewById(R.id.et_gallery_phone);
+        masketPhoneNumber = findViewById(R.id.masket_gallery_phone);
         btnGallery = findViewById(R.id.btn_gallery);
         btnGallery.setOnClickListener(this);
         imgBack = findViewById(R.id.img_gallery_back);
@@ -86,13 +93,69 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_gallery: generateCode(v); break;
-            case R.id.img_gallery_back: goBack(v); break;
+            case R.id.btn_gallery:
+                submit();
+                break;
+            case R.id.img_gallery_back:
+                goBack();
+                break;
             default:break;
         }
     }
 
-    private void generateCode(View v) {
+    private void submit() {
+        if (!checkName()) return;
+        if (!checkSurname()) return;
+        if (!checkPhoneNumber()) return;
+        generateCode();
+    }
+
+    private boolean checkName() {
+        if (etName.getText().toString().trim().isEmpty()) {
+            nameLayout.setErrorEnabled(true);
+            nameLayout.setError(getResources().getString(R.string.gallery_name_null_error));
+            requestFocus(etName);
+            return false;
+        }
+        nameLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean checkSurname() {
+        if (etSurname.getText().toString().trim().isEmpty()) {
+            surnameLayout.setErrorEnabled(true);
+            surnameLayout.setError(getResources().getString(R.string.gallery_surname_null_error));
+            requestFocus(etSurname);
+            return false;
+        }
+        surnameLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean checkPhoneNumber() {
+        if (masketPhoneNumber.getRawText().trim().isEmpty()) {
+            phoneNumberLayout.setErrorEnabled(true);
+            phoneNumberLayout.setError(getResources().getString(R.string.gallery_phone_null_error));
+            requestFocus(masketPhoneNumber);
+            return false;
+        }
+        if (masketPhoneNumber.getRawText().trim().length() != 12 | !Patterns.PHONE.matcher(masketPhoneNumber.getRawText()).matches()) {
+            phoneNumberLayout.setErrorEnabled(true);
+            phoneNumberLayout.setError(getResources().getString(R.string.gallery_phone_wrong_error));
+            requestFocus(masketPhoneNumber);
+            return false;
+        }
+        phoneNumberLayout.setErrorEnabled(false);
+        return true;
+    }
+
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+
+    private void generateCode() {
         Date myDate =  new Date();
         SimpleDateFormat format1 = new SimpleDateFormat("yyyy--MM-dd hh:mm:ss a", Locale.getDefault());
         String date = format1.format(myDate);
@@ -100,9 +163,9 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         int n = 100000 + r.nextInt(900000);
         String code = String.valueOf(n);
 
-        name = etName.getText().toString();
-        surname = etSurname.getText().toString();
-        phoneNumber = etPhoneNumber.getRawText();
+        name = nameLayout.getEditText().getText().toString();
+        surname = surnameLayout.getEditText().getText().toString();
+        phoneNumber = phoneNumberLayout.getEditText().getText().toString();
         Animation animation = AnimationUtils.loadAnimation(this,R.anim.fade_in);
         btnGallery.startAnimation(animation);
 
@@ -115,14 +178,14 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
             startActivity(intent); overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left); finish();
         }
         else if (name.isEmpty() || surname.isEmpty() || phoneNumber.isEmpty()){
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.gallery_form_error), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.gallery_name_null_error), Toast.LENGTH_SHORT).show();
         }
         else {
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.gallery_profile_picture_error), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void goBack(View v){
+    private void goBack() {
         Animation animation = AnimationUtils.loadAnimation(this,R.anim.bounce);
         imgBack.startAnimation(animation);
         Intent intent = new Intent(GalleryActivity.this, RegisterActivity.class);
@@ -131,5 +194,4 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
-
 }

@@ -142,9 +142,9 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     @Override
@@ -254,13 +254,15 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         mDrawerLayout.closeDrawers();
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.user_gps_whatsapp_text) + latLngUser.latitude + "," + latLngUser.longitude + ",17z");
+        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.user_gps_whatsApp_text) + latLngUser.latitude + "," + latLngUser.longitude + ",17z");
         intent.setPackage("com.whatsapp");
         startActivity(intent);
     }
 
     //Sign out.
     public void signOut() {
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawers();
         if (user != null) {
             reference.child(user_uid).child("isSharing").setValue(false);
             auth.signOut();
@@ -291,7 +293,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                             mMap.addMarker(new MarkerOptions()
                                     .icon(bitmapDescriptorFromVector(UserLocationMainActivity.this, R.drawable.friends_marker))
                                     .position(latLngTemp)
-                                    .title(user.name + " " + user.surname + getResources().getString(R.string.user_location_distance) + calculateDistance(latLngTemp, latLngUser)));
+                                    .title(user.name + " " + user.surname + " " + getResources().getString(R.string.user_location_distance) + " " + calculateDistance(latLngTemp, latLngUser)));
                             if (Math.round(SphericalUtil.computeDistanceBetween(latLngTemp, latLngUser)) < 500) {
                                 sendToChannel1(user.name + " " + user.surname, user.phoneNumber);
                             }
@@ -308,9 +310,9 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     private String calculateDistance(LatLng b, LatLng a) {
         double distance = SphericalUtil.computeDistanceBetween(b, a);
         if (distance < 1000)
-            return Math.round(distance) + getResources().getString(R.string.user_location_meter);
+            return Math.round(distance) + " " + getResources().getString(R.string.user_location_meter);
         else
-            return Math.round(distance / 1000) + getResources().getString(R.string.user_location_km);
+            return Math.round(distance / 1000) + " " + getResources().getString(R.string.user_location_km);
     }
 
     // Fetches information of current user.
@@ -327,7 +329,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                 } else {
                     tv_username.setText(getResources().getString(R.string.error));
                     tv_user_email.setText(getResources().getString(R.string.error));
-                    Picasso.get().load(R.drawable.defaultprofile).into(iv_user_image);
+                    Picasso.get().load(R.drawable.upload_profile).into(iv_user_image);
                 }
             }
             @Override
@@ -392,7 +394,10 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                     public void onClick(DialogInterface dialog, int which) {
                         reference.child(user_uid).child("isSharing").setValue(false);
                         UserLocationMainActivity.this.finish();
-                        System.exit(0); }});
+                        System.exit(0);
+                        overridePendingTransition(0, R.anim.fade_in);
+                    }
+        });
         builder.show();
     }
 

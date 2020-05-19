@@ -12,7 +12,6 @@
     <!--ORDER BY ACTIVITIES-->
 
     <!--Common Strings-->
-    <string name="check_information">Checking your information.</string>
     <string name="button_back">Back Button</string>
     <string name="error">ERROR</string>
     <!--Common Strings End-->
@@ -21,7 +20,7 @@
     <string name="welcome_main_text">Welcome</string>
     <string name="welcome_sub_text">Please login for continue.</string>
     <string name="welcome_button_text">Login</string>
-    <string name="welcome_member_text">Not registered?</string>
+    <string name="welcome_member_text">Not a member?</string>
     <string name="welcome_register_text">Register.</string>
     <!--Welcome Activity End-->
 
@@ -34,20 +33,33 @@
     <string name="login_member_text">Not registered?</string>
     <string name="login_register_text">Register.</string>
 
-    <string name="login_field_error">Email and password are mustn"'"t be null.</string>
+
+    <string name="login_email_null_error">Email address field cannot be empty!</string>
+    <string name="login_password_null_error">Password field cannot be empty!</string>
     <string name="login_wrong_info">Wrong email or password.</string>
     <!--Login Activity End-->
 
     <!--Register Activity-->
     <string name="register_main_text">Register</string>
     <string name="register_username_hint">Username</string>
-    <string name="register_email_hint">neredesin@gmail.com</string>
-    <string name="register_password_hint">* * * * * * * * *</string>
+    <string name="register_email_hint">Email Address</string>
+    <string name="register_password_hint">Password</string>
+    <string name="register_password_confirm_hint">Confirm Password</string>
     <string name="register_button_text">Next</string>
 
-    <string name="register_password_error">Password must be longer than 6 characters.</string>
-    <string name="register_email_error">This e-mail is already registered.</string>
-    <string name="register_form_error">Please fill all text fields.</string>
+    <string name="register_username_null_error">Username cannot be empty.</string>
+    <string name="register_username_min_char_error">Username must be at least 5 characters.</string>
+    <string name="register_username_max_char_error">Username cannot exceed 15 characters.</string>
+
+    <string name="register_email_null_error">Email address cannot be empty.</string>
+    <string name="register_email_wrong_error">This email address is invalid.</string>
+    <string name="register_email_duplicate_error">This email already registered.</string>
+
+    <string name="register_password_null_error">Password field cannot be empty.</string>
+    <string name="register_password_confirm_null_error">Confirm password field cannot be empty.</string>
+    <string name="register_password_confirm_not_match_error">Passwords doesn"'"t matches.</string>
+
+    <string name="register_check_information">Checking your information...</string>
 
     <string name="register_alert_title">Connection Problem!</string>
     <string name="register_alert_text">Please enable your internet connection in order to keep registering.</string>
@@ -57,23 +69,26 @@
 
     <!--Gallery Activity-->
     <string name="gallery_profile_text">Profile</string>
-    <string name="gallery_image_text">Please choose a profile image from box below this text.</string>
+    <string name="gallery_image_text">Choose a profile image from box where below this text.</string>
     <string name="gallery_name_hint">Name</string>
     <string name="gallery_surname_hint">Surname</string>
     <string name="gallery_phone_hint">Phone Number</string>
     <string name="gallery_button_text">Next</string>
 
-    <string name="gallery_form_error">Please fill all fields.</string>
     <string name="gallery_profile_picture_error">Please choose a profile picture.</string>
+    <string name="gallery_name_null_error">Name field cannot be empty.</string>
+    <string name="gallery_surname_null_error">Surname field cannot be empty.</string>
+    <string name="gallery_phone_null_error">Phone number field cannot be empty.</string>
+    <string name="gallery_phone_wrong_error">This phone number is invalid.</string>
     <!--Gallery Activity End-->
 
     <!--Invite Code Activity-->
-    <string name="invite_code_text">Complete Register</string>
-    <string name="invite_code_sub_text">Registering will be completed with this unique id.</string>
+    <string name="invite_code_text">Complete Your Registration</string>
+    <string name="invite_code_sub_text">Registration will be completed with this unique id.</string>
     <string name="invite_code_code_text">* * * * * * * * *</string>
     <string name="invite_code_button_text">Register</string>
 
-    <string name="invite_code_progress">Saving information.</string>
+    <string name="invite_code_progress">Saving your information.</string>
     <string name="invite_code_successful">Registered successfully.</string>
     <string name="invite_code_failed">An error occurred while registering.</string>
 
@@ -88,26 +103,26 @@
     <string name="user_get_invite_code">Copy My Code</string>
     <string name="user_invite_code_copied">Copied your code to clipboard.</string>
     <string name="user_gps_whatsApp">Share Location On WhatsApp</string>
-    <string name="user_gps_whatsapp_text">I"'"m here now: https://www.google.com/maps/@</string>
+    <string name="user_gps_whatsApp_text">I"'"m here now: https://www.google.com/maps/@</string>
     <string name="user_sign_out">Sign Out</string>
     <string name="action_location_settings">GPS Settings</string>
     <string name="user_online_users">Online Users</string>
 
     <string name="user_location_here">You"'"re here.</string>
-    <string name="user_location_distance"> - distance to you: </string>
-    <string name="user_location_meter"> meters.</string>
-    <string name="user_location_km"> km.</string>
+    <string name="user_location_distance">- distance to you: </string>
+    <string name="user_location_meter">meters.</string>
+    <string name="user_location_km">km.</string>
     <string name="user_location_error">Your location was not found.</string>
     <string name="user_location_alert_text">Your location is disabled. Do you want to enabled?</string>
     <string name="user_location_alert_positive_text">Go To GPS Settings</string>
     <string name="user_location_alert_negative_text">Got It.</string>
 
-    <string name="user_notification_title"> Near You!</string>
-    <string name="user_notification_text">Click for dial, or shake your hand :)</string>
+    <string name="user_notification_title">Near You!</string>
+    <string name="user_notification_text">Click for call, or shake your hand :)</string>
     <string name="user_notification_call">Call</string>
 
     <string name="user_exit_alert_title">Exit Application</string>
-    <string name="user_exit_alert_text">Do you want to exit app?</string>
+    <string name="user_exit_alert_text">Do you want to exit the application?</string>
     <string name="user_exit_alert_positive_text">Exit</string>
     <string name="user_exit_alert_negative_text">Go Back</string>
     <!--User Location Main Activity End-->
