@@ -13,8 +13,8 @@
 
     <ImageView
         android:id="@+id/img_gallery_back"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -26,11 +26,11 @@
         android:id="@+id/tv_invite_code_main_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/bold"
         android:text="@string/gallery_profile_text"
         android:textColor="@color/background_gray"
-        android:textSize="40sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="@+id/img_gallery_back"
         app:layout_constraintTop_toBottomOf="@+id/img_gallery_back" />
 
@@ -43,7 +43,7 @@
         android:fontFamily="@font/light"
         android:text="@string/gallery_image_text"
         android:textColor="@color/background_gray"
-        android:textSize="18sp"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="@+id/tv_invite_code_main_text"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tv_invite_code_main_text"
@@ -51,8 +51,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_gallery_profile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"

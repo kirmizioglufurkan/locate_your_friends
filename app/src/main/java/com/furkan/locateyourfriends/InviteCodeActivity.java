@@ -92,10 +92,10 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     //Insert values in realtime database
-                    CreateUser createUser = new CreateUser(username, email, password, name, surname, phoneNumber, code, false, 0, 0, "na");
+                    User registerUser = new User(username, email, password, name, surname, phoneNumber, code, false, 0, 0, "na");
                     user = auth.getCurrentUser();
                     userId = user.getUid();
-                    reference.child(userId).setValue(createUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    reference.child(userId).setValue(registerUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
@@ -166,4 +166,5 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
             return false;
         }
     }
+
 }

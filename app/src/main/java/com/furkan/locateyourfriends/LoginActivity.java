@@ -15,15 +15,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button btnLogin;
     private TextView goToRegister;
     private ImageView imgBack;
+    private ProgressBar pbLogin;
     private TextInputLayout emailLayout, passwordLayout;
     private EditText etEmail, etPassword;
     private String user_email, user_password;
@@ -53,6 +55,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         passwordLayout = findViewById(R.id.til_login_password);
         etEmail = findViewById(R.id.et_login_email);
         etPassword = findViewById(R.id.et_login_password);
+        pbLogin = findViewById(R.id.progressbar_login);
+        pbLogin.setVisibility(View.INVISIBLE);
         auth = FirebaseAuth.getInstance();
 
         Intent intent = getIntent();
@@ -65,17 +69,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (!checkEmail()) return;
         if (!checkPassword()) return;
         if (!checkConnection()) return;
-        user_email = etEmail.getText().toString();
-        user_password = etPassword.getText().toString();
+        pbLogin.setVisibility(View.VISIBLE);
+        user_email = etEmail.getText().toString().trim();
+        user_password = etPassword.getText().toString().trim();
         auth.signInWithEmailAndPassword(user_email, user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+                    pbLogin.setVisibility(View.VISIBLE);
                     Intent intent = new Intent(LoginActivity.this, UserLocationMainActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_wrong_info), Toast.LENGTH_SHORT).show();
+                    pbLogin.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -143,7 +150,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (activeInfo != null && activeInfo.isConnected())
             return true;
         else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(LoginActivity.this);
             builder.setCancelable(false);
             builder.setIcon(R.drawable.wifi_off);
             builder.setTitle(getResources().getString(R.string.login_alert_title));

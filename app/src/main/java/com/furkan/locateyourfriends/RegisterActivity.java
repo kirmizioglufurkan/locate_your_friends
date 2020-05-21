@@ -52,7 +52,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         etPassword = findViewById(R.id.et_register_password);
         etPasswordConfirm = findViewById(R.id.et_register_password_confirm);
 
-        btnRegister = findViewById(R.id.btn_Register);
+        btnRegister = findViewById(R.id.btn_register);
         imgBack = findViewById(R.id.img_register_back);
         btnRegister.setOnClickListener(this);
         imgBack.setOnClickListener(this);
@@ -78,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_Register:
+            case R.id.btn_register:
                 register();
                 break;
             case R.id.img_register_back:

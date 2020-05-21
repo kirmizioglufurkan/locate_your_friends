@@ -55,12 +55,36 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add_friend: {
-                if (!submit()) return;
+                if (!checkConnection()) return;
                 setFriend();
+                break;
             }
             case R.id.img_add_friend_back:
                 goToUserLocationMainActivity();
                 break;
+        }
+    }
+
+    private boolean checkConnection() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
+        if (activeInfo != null && activeInfo.isConnected())
+            return true;
+        else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(AddFriendActivity.this);
+            builder.setCancelable(false);
+            builder.setIcon(R.drawable.wifi_off);
+            builder.setTitle(getResources().getString(R.string.add_friend_alert_title));
+            builder.setMessage(getResources().getString(R.string.add_friend_alert_text));
+            builder.setNegativeButton(getResources().getString(R.string.add_friend_alert_negative_text), null);
+            builder.setPositiveButton(getResources().getString(R.string.add_friend_alert_positive_text), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    AddFriendActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                }
+            });
+            builder.show();
+            return false;
         }
     }
 
@@ -83,29 +107,7 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-    }
-
-    private boolean submit() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeInfo != null && activeInfo.isConnected())
-            return true;
-        else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(AddFriendActivity.this);
-            builder.setCancelable(false);
-            builder.setIcon(R.drawable.wifi_off);
-            builder.setTitle(getResources().getString(R.string.add_friend_alert_title));
-            builder.setMessage(getResources().getString(R.string.add_friend_alert_text));
-            builder.setNegativeButton(getResources().getString(R.string.add_friend_alert_negative_text), null);
-            builder.setPositiveButton(getResources().getString(R.string.add_friend_alert_positive_text), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    AddFriendActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                }
-            });
-            builder.show();
-            return false;
-        }
+        pwInviteCode.getText().clear();
     }
 
     private void goToUserLocationMainActivity() {

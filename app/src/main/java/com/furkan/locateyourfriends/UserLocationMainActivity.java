@@ -73,7 +73,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    public static final String CHANNEL_1_ID = "channel1";
+    public static final String CHANNEL_1_ID = "channel1", USERS = "Users", CODE = "code", IS_SHARING = "isSharing", LAT = "lat", LNG = "lng", FRIENDS = "friends";
     private FirebaseAuth auth;
     private FirebaseUser user;
     private DatabaseReference reference;
@@ -115,12 +115,11 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         createNotificationChannels();
 
         notificationManagerCompat = NotificationManagerCompat.from(UserLocationMainActivity.this);
-
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         user_uid = auth.getUid();
-        reference = FirebaseDatabase.getInstance().getReference().child("Users");
-        reference.child(user_uid).child("isSharing").setValue(true);
+        reference = FirebaseDatabase.getInstance().getReference().child(USERS);
+        reference.child(user_uid).child(IS_SHARING).setValue(true);
         currentUserInformation(reference);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -132,25 +131,15 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         });
     }
 
+
     @Override
     protected void onDestroy() {
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user_uid).child("isSharing");
-        dbRef.setValue(false);
-        super.onDestroy();
-        finish();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
         overridePendingTransition(R.anim.fade_out, R.anim.fade_out);
+        super.onDestroy();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
 
+    // ------NAVIGATION VIEW ITEMS------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -171,6 +160,11 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    // ------NAVIGATION VIEW ITEMS END------
+
+
+    // ------MAP & LOCATION SERVICES------
 
     //Gets location.
     @Override
@@ -209,17 +203,14 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         if (location == null) {
             Toast.makeText(getApplicationContext(), R.string.user_location_error, Toast.LENGTH_LONG).show();
         } else {
-            reference.child(user_uid).child("lat").setValue(location.getLatitude());
-            reference.child(user_uid).child("lng").setValue(location.getLongitude());
+            reference.child(user_uid).child(LAT).setValue(location.getLatitude());
+            reference.child(user_uid).child(LNG).setValue(location.getLongitude());
+            latLngUser = new LatLng(location.getLatitude(), location.getLongitude());
 
             mMap.clear();
-            latLngUser = new LatLng(location.getLatitude(), location.getLongitude());
-            mMap.addMarker(new MarkerOptions()
-                    .icon(bitmapDescriptorFromVector(this, R.drawable.my_marker))
-                    .position(latLngUser)
-                    .title(getResources().getString(R.string.user_location_here)));
-            retrieveOtherUsersLocations(mMap);
             setMenuItems(reference, navigationView);
+            locateOnMap(mMap);
+            sendNotification();
         }
     }
 
@@ -234,71 +225,20 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
     }
 
-    // Copies UserUID to clipboard.
-    public void getMyInviteCode() {
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawers();
-        reference.child(user_uid).child("code").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        user_code = ds.child("code").getValue(String.class);
-                    }
-                }
-            }
+    // Fetches other users locations.
+    private void locateOnMap(final GoogleMap mMap) {
+        mMap.clear();
+        markUserLocation();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Invite Code", user_code);
-        clipboard.setPrimaryClip(clip);
-        Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_invite_code_copied), Toast.LENGTH_SHORT).show();
-    }
-
-    // Shares instant location on WhatsApp.
-    public void shareOnWhatsApp() {
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawers();
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.user_gps_whatsApp_text) + latLngUser.latitude + "," + latLngUser.longitude + ",17z");
-        intent.setPackage("com.whatsapp");
-        startActivity(intent);
-    }
-
-    //Sign out.
-    public void signOut() {
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawers();
-        if (user != null) {
-            reference.child(user_uid).child("isSharing").setValue(false);
-            auth.signOut();
-            startActivity(new Intent(UserLocationMainActivity.this, WelcomeActivity.class));
-            finish();
-        }
-    }
-
-    // Goes to Location Settings
-    public void locationSettings(MenuItem m) {
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawers();
-        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-    }
-
-    // Fetches other users locations. (need to optimize)
-    private void retrieveOtherUsersLocations(final GoogleMap mMap) {
         //Fetches user's friends as type of Friendship.
-        reference.child(user_uid).child("friends").addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(user_uid).child(FRIENDS).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         Friendship friendship = ds.getValue(Friendship.class);
                         //Searches and matches friend's invite code in all users and get the user information.
-                        reference.orderByChild("code").equalTo(friendship.code).addValueEventListener(new ValueEventListener() {
+                        reference.orderByChild(CODE).equalTo(friendship.code).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
@@ -311,8 +251,6 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                                                     .icon(bitmapDescriptorFromVector(UserLocationMainActivity.this, R.drawable.friends_marker))
                                                     .position(latLngTemp)
                                                     .title(locationUser.name + " " + locationUser.surname + " " + getResources().getString(R.string.user_location_distance) + " " + calculateDistance(latLngTemp, latLngUser)));
-                                            if (Math.round(SphericalUtil.computeDistanceBetween(latLngTemp, latLngUser)) < 500)
-                                                sendToChannel1(locationUser.name + " " + locationUser.surname, locationUser.phoneNumber);
                                         }
                                     }
                                 }
@@ -325,6 +263,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -339,6 +278,52 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         else
             return Math.round(distance / 1000) + " " + getResources().getString(R.string.user_location_km);
     }
+
+    //User location marker.
+    private void markUserLocation() {
+        mMap.addMarker(new MarkerOptions()
+                .icon(bitmapDescriptorFromVector(this, R.drawable.my_marker))
+                .position(latLngUser)
+                .title(getResources().getString(R.string.user_location_here)));
+    }
+
+    private void sendNotification() {
+        reference.child(user_uid).child(FRIENDS).orderByChild(IS_SHARING).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Friendship friendship = ds.getValue(Friendship.class);
+                        reference.orderByChild(CODE).equalTo(friendship.code).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists())
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                        User notifyUser = ds.getValue(User.class);
+                                        LatLng temp = new LatLng(notifyUser.lat, notifyUser.lng);
+                                        if (Math.round(SphericalUtil.computeDistanceBetween(temp, latLngUser)) < 500)
+                                            sendToChannel1(notifyUser.name + " " + notifyUser.surname, notifyUser.phoneNumber);
+                                    }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    // ------MAP & LOCATION SERVICES END------
+
+
+    // ------NAVIGATION VIEW - MENU ITEMS & ACTIONS------
 
     // Fetches information of current user.
     private void currentUserInformation(DatabaseReference reference) {
@@ -357,6 +342,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                     Picasso.get().load(R.drawable.upload_profile).into(iv_user_image);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -367,8 +353,8 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     private void setMenuItems(final DatabaseReference refMenuItem, final NavigationView navView) {
         Menu menu = navView.getMenu();
         menu.clear();
-        SubMenu myMenu = menu.addSubMenu(R.string.user_me);
-        myMenu.add("Arkadaş Ekle").setIcon(R.drawable.explore).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        final SubMenu myMenu = menu.addSubMenu(R.string.user_me);
+        myMenu.add(getResources().getString(R.string.add_friend_text)).setIcon(R.drawable.add_friend).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent intent = new Intent(UserLocationMainActivity.this, AddFriendActivity.class);
@@ -390,6 +376,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                 return true;
             }
         });
+
         myMenu.add(getResources().getString(R.string.user_sign_out)).setIcon(R.drawable.sign_out).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -398,8 +385,8 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
             }
         });
 
-        final Menu sideMenu = menu.addSubMenu(getResources().getString(R.string.user_online_users));
-        Query query = refMenuItem.child(user_uid).child("friends");
+        final Menu sideMenu = menu.addSubMenu(getResources().getString(R.string.user_friends));
+        Query query = refMenuItem.child(user_uid).child(FRIENDS);
         //Fetches friends of user's.
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -411,7 +398,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                             @Override
                             public boolean onMenuItemClick(final MenuItem item) {
                                 //fetch
-                                reference.orderByChild("code").equalTo(friendship.code).addValueEventListener(new ValueEventListener() {
+                                reference.orderByChild(CODE).equalTo(friendship.code).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.exists()) {
@@ -422,7 +409,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                                                     moveToCurrentLocation(latLngTemp);
                                                     onNavigationItemSelected(item);
                                                 } else
-                                                    Toast.makeText(getApplicationContext(), "Konumu şu anda erişilebilir değil!", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getApplicationContext(), locateUser.name + " " + locateUser.surname + " " + getResources().getString(R.string.user_friend_location_null_error), Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     }
@@ -436,7 +423,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                         });
                     }
                 } else {
-                    sideMenu.add("Şu anda hiç arkadaşınız yok!");
+                    sideMenu.addSubMenu(getResources().getString(R.string.user_friends_null_error));
                 }
             }
 
@@ -445,6 +432,79 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
             }
         });
     }
+
+    // Copies UserUID to clipboard.
+    public void getMyInviteCode() {
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawers();
+        reference.child(user_uid).child(CODE).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    user_code = dataSnapshot.getValue(String.class);
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("Invite Code", getResources().getString(R.string.user_invite_code_prefix) + " " + user_code);
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_invite_code_copied), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    // Shares instant location on WhatsApp.
+    public void shareOnWhatsApp() {
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawers();
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.user_gps_whatsApp_text) + latLngUser.latitude + "," + latLngUser.longitude + ",17z");
+        intent.setPackage("com.whatsapp");
+        startActivity(intent);
+    }
+
+    //Sign out.
+    public void signOut() {
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawers();
+        if (user != null) {
+            reference.child(user_uid).child(IS_SHARING).setValue(false);
+            auth.signOut();
+            startActivity(new Intent(UserLocationMainActivity.this, WelcomeActivity.class));
+            finish();
+        }
+    }
+
+    // Goes to Location Settings
+    public void locationSettings(MenuItem m) {
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawers();
+        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+    }
+
+    //Set isSharing true.
+    public void sharing_enable(MenuItem item) {
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawers();
+        reference.child(user_uid).child(IS_SHARING).setValue(true);
+        Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_sharing_enabled), Toast.LENGTH_SHORT).show();
+    }
+
+    //Set isSharing false.
+    public void sharing_disable(MenuItem item) {
+        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout.closeDrawers();
+        reference.child(user_uid).child(IS_SHARING).setValue(false);
+        Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_sharing_disabled), Toast.LENGTH_SHORT).show();
+    }
+
+    // ------NAVIGATION VIEW - SIDE MENU ITEMS & ACTIONS END------
+
+
+    // ------RUNNING SERVICES ON ACTIVITY------
 
     //Action when user pressed return button.
     public void onBackPressed() {
@@ -456,22 +516,11 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         builder.setPositiveButton(getResources().getString(R.string.user_exit_alert_positive_text), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                reference.child(user_uid).child("isSharing").setValue(false);
-                UserLocationMainActivity.this.finish();
-                System.exit(0);
-                overridePendingTransition(R.anim.fade_out, R.anim.fade_out);
+                reference.child(user_uid).child(IS_SHARING).setValue(false);
+                UserLocationMainActivity.this.onDestroy();
             }
         });
         builder.show();
-    }
-
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     private boolean checkGPSConnection() {
@@ -552,9 +601,28 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                 .setContentText(getResources().getString(R.string.user_notification_text))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setOnlyAlertOnce(true)
                 .setAutoCancel(true)
                 .addAction(R.drawable.phone, getResources().getString(R.string.user_notification_call), phoneCallIntent);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, myNotification.build());
     }
+
+    // ------RUNNING SERVICES ON ACTIVITY END------
+
+
+    // ------UTILITY FUNCTIONS------
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    // ------UTILITY FUNCTIONS END------
+
+
 }

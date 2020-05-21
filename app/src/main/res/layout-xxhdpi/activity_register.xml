@@ -20,11 +20,11 @@
         android:id="@+id/welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/bold"
         android:text="@string/register_main_text"
         android:textColor="@color/background_gray"
-        android:textSize="40sp"
+        android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="@+id/img_register_back"
         app:layout_constraintStart_toStartOf="@+id/img_register_back"
         app:layout_constraintTop_toBottomOf="@+id/img_register_back" />
@@ -34,7 +34,7 @@
         style="@style/CustomTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:hint="@string/register_username_hint"
         app:layout_constraintEnd_toEndOf="@+id/welcome"
         app:layout_constraintStart_toStartOf="@+id/welcome"
@@ -111,8 +111,9 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_register"
         style="@style/CustomButton"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:text="@string/register_button_text"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/til_register_password_confirm"
         app:layout_constraintTop_toBottomOf="@+id/til_register_password_confirm" />
 

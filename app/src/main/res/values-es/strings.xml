@@ -35,8 +35,8 @@
     <string name="login_member_text">¿No registrado?</string>
     <string name="login_register_text">Registrarse.</string>
 
-    <string name="login_email_null_error">E-Mail adresi boş bırakılamaz!</string>
-    <string name="login_password_null_error">Parola boş bırakılamaz!</string>
+    <string name="login_email_null_error">¡El campo de dirección de correo electrónico no puede estar vacío!</string>
+    <string name="login_password_null_error">¡El campo de contraseña no puede estar vacío!</string>
     <string name="login_wrong_info">Correo o contraseña equivocada.</string>
 
     <string name="login_alert_title">¡Problema de conexión!</string>
@@ -50,7 +50,7 @@
     <string name="register_username_hint">Nombre de usuario</string>
     <string name="register_email_hint">Dirección de correo electrónico</string>
     <string name="register_password_hint">Contraseña</string>
-    <string name="register_password_confirm_hint">Parolayı Yinele</string>
+    <string name="register_password_confirm_hint">Confirmar Contraseña</string>
     <string name="register_button_text">Siguiente</string>
 
     <string name="register_username_null_error">El nombre de usuario no puede estar vacío!</string>
@@ -102,15 +102,27 @@
     <string name="invite_code_alert_negative_text">Entendido</string>
     <!--Invite Code Activity End-->
 
-    <!--User Location Main Activity-->
+
+    <!--USER LOCATION MAIN ACTIVITY-->
     <string name="user_me">Mi Página</string>
+    <string name="user_add_friend">Agrega tu amigo</string>
     <string name="user_get_invite_code">Copiar mi código</string>
+    <string name="user_invite_code_prefix">Mi código de invitación en la aplicación Neredesin:</string>
     <string name="user_invite_code_copied">Copió su código al portapapeles.</string>
-    <string name="user_gps_whatsApp">Compartir Ubicación en WhatsApp</string>
+    <string name="user_gps_whatsApp">Compartir ubicación en WhatsApp</string>
     <string name="user_gps_whatsApp_text">Estoy aquí ahora: https://www.google.com/maps/@</string>
     <string name="user_sign_out">Desconectar</string>
+    <string name="user_friends">Usuarios en línea.</string>
+    <string name="user_friends_null_error">Aún no has añadido un amigo.</string>
+    <string name="user_friend_location_null_error">¡No está en línea ahora mismo!</string>
+
+
     <string name="action_location_settings">Configuraciones GPS</string>
-    <string name="user_online_users">Usuarios en línea.</string>
+    <string name="user_sharing_enable">Empieza a compartir</string>
+    <string name="user_sharing_disable">Deja de compartir</string>
+    <string name="user_sharing_enabled">Ahora te siguen :)</string>
+    <string name="user_sharing_disabled">Ahora te estas escondiendo.</string>
+
 
     <string name="user_location_here">Estás aquí.</string>
     <string name="user_location_distance">- distancia a ti: </string>
@@ -129,12 +141,12 @@
     <string name="user_exit_alert_text">¿Quieres salir de la aplicación?</string>
     <string name="user_exit_alert_positive_text">Salir</string>
     <string name="user_exit_alert_negative_text">Regresa</string>
-    <!--User Location Main Activity End-->
+    <!--USER LOCATION MAIN ACTIVITY END-->
 
-    <!--Add Friend Activity-->
+    <!--Add Friend Activity<-->
     <string name="add_friend_text">Agrega Tus Amigos</string>
     <string name="add_friend_sub_text">Por favor ingrese el código de invitación de su amigo.</string>
-    <string name="add_friend_button_text">Poner</string>
+    <string name="add_friend_button_text">Añadir</string>
 
     <string name="add_friend_alert_title">¡Problema de conexión!</string>
     <string name="add_friend_alert_text">Habilite su conexión a Internet para seguir agregando a su amigo.</string>

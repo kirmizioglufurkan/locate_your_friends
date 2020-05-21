@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/img_login_back"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back_button" />
@@ -26,7 +26,7 @@
         android:fontFamily="@font/bold"
         android:text="@string/login_main_text"
         android:textColor="@color/background_gray"
-        android:textSize="40sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/img_login_back"
@@ -79,6 +79,7 @@
         style="@style/CustomButton"
         android:layout_marginTop="40dp"
         android:text="@string/login_button_text"
+        android:textSize="15dp"
         app:layout_constraintStart_toStartOf="@+id/til_login_password"
         app:layout_constraintTop_toBottomOf="@+id/til_login_password" />
 
@@ -101,7 +102,7 @@
         android:fontFamily="@font/light"
         android:text="@string/login_member_text"
         android:textColor="@color/background_gray"
-        android:textSize="20sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/btn_login"
         app:layout_constraintTop_toBottomOf="@+id/btn_login"
@@ -115,7 +116,7 @@
         android:fontFamily="@font/semibold"
         android:text="@string/login_register_text"
         android:textColor="@color/background_red"
-        android:textSize="20sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/not_member"
         app:layout_constraintStart_toEndOf="@+id/not_member"
         app:layout_constraintTop_toTopOf="@+id/not_member"

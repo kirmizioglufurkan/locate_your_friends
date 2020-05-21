@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    android:padding="24dp"
+    tools:context=".WelcomeActivity">
+
+
+    <TextView
+        android:id="@+id/welcome_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/bold"
+        android:text="@string/welcome_main_text"
+        android:textColor="@color/background_white"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/welcome_sub_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:alpha="0.5"
+        android:fontFamily="@font/light"
+        android:text="@string/welcome_sub_text"
+        android:textColor="@color/background_white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/welcome_main"
+        app:layout_constraintTop_toBottomOf="@+id/welcome_main" />
+
+    <Button
+        android:id="@+id/btn_welcome_login"
+        style="@style/CustomButton"
+        android:layout_marginTop="30dp"
+        android:text="@string/welcome_button_text"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/welcome_sub_text"
+        app:layout_constraintTop_toBottomOf="@+id/welcome_sub_text" />
+
+    <TextView
+        android:id="@+id/not_member"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/light"
+        android:text="@string/welcome_member_text"
+        android:textColor="@color/background_gray"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/btn_welcome_login"
+        app:layout_constraintTop_toBottomOf="@+id/btn_welcome_login"
+        app:layout_constraintVertical_bias="0.993" />
+
+    <TextView
+        android:id="@+id/tv_welcome_goToRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:fontFamily="@font/semibold"
+        android:text="@string/welcome_register_text"
+        android:textColor="@color/background_red"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/not_member"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/not_member"
+        app:layout_constraintTop_toTopOf="@+id/not_member"
+        app:layout_constraintVertical_bias="0.0" />
+</androidx.constraintlayout.widget.ConstraintLayout>

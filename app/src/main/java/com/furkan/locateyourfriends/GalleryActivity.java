@@ -29,14 +29,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GalleryActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String username, email, password, name, surname, phoneNumber;
+    private String username, email, password, name, surname, phoneNumber, date, code;
     private TextInputLayout nameLayout, surnameLayout, phoneNumberLayout;
     private EditText etName, etSurname;
-    private MaskEditText masketPhoneNumber;
+    private MaskEditText maskPhoneNumber;
     private CircleImageView circleImageView;
     private Uri resultUri;
     private Button btnGallery;
     private ImageView imgBack;
+    private Date myDate = new Date();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         phoneNumberLayout = findViewById(R.id.til_gallery_phone);
         etName = findViewById(R.id.et_gallery_name);
         etSurname = findViewById(R.id.et_gallery_surname);
-        masketPhoneNumber = findViewById(R.id.masket_gallery_phone);
+        maskPhoneNumber = findViewById(R.id.masket_gallery_phone);
         btnGallery = findViewById(R.id.btn_gallery);
         btnGallery.setOnClickListener(this);
         imgBack = findViewById(R.id.img_gallery_back);
@@ -62,6 +63,21 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
             password = intent.getStringExtra("password");
         }
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_gallery:
+                saveProfileInfo();
+                break;
+            case R.id.img_gallery_back:
+                goBack();
+                break;
+            default:
+                break;
+        }
+    }
+
 
     public void selectImage(View v) {
         Intent i = new Intent();
@@ -91,27 +107,6 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_gallery:
-                submit();
-                break;
-            case R.id.img_gallery_back:
-                goBack();
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void submit() {
-        if (!checkName()) return;
-        if (!checkSurname()) return;
-        if (!checkPhoneNumber()) return;
-        generateCode();
-    }
-
     private boolean checkName() {
         if (etName.getText().toString().trim().isEmpty()) {
             nameLayout.setErrorEnabled(true);
@@ -135,16 +130,16 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private boolean checkPhoneNumber() {
-        if (masketPhoneNumber.getRawText().trim().isEmpty()) {
+        if (maskPhoneNumber.getRawText().trim().isEmpty()) {
             phoneNumberLayout.setErrorEnabled(true);
             phoneNumberLayout.setError(getResources().getString(R.string.gallery_phone_null_error));
-            requestFocus(masketPhoneNumber);
+            requestFocus(maskPhoneNumber);
             return false;
         }
-        if (masketPhoneNumber.getRawText().trim().length() != 12 | !Patterns.PHONE.matcher(masketPhoneNumber.getRawText()).matches()) {
+        if (maskPhoneNumber.getRawText().trim().length() != 12 | !Patterns.PHONE.matcher(maskPhoneNumber.getRawText()).matches()) {
             phoneNumberLayout.setErrorEnabled(true);
             phoneNumberLayout.setError(getResources().getString(R.string.gallery_phone_wrong_error));
-            requestFocus(masketPhoneNumber);
+            requestFocus(maskPhoneNumber);
             return false;
         }
         phoneNumberLayout.setErrorEnabled(false);
@@ -158,18 +153,22 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void generateCode() {
+
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy--MM-dd hh:mm:ss a", Locale.getDefault());
+        format1.format(myDate);
+        Random r = new Random();
+        int n = 100000 + r.nextInt(900000);
+        code = String.valueOf(n);
+    }
+
+    private void saveProfileInfo() {
         if (!checkName()) return;
         if (!checkSurname()) return;
         if (!checkPhoneNumber()) return;
-        Date myDate = new Date();
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy--MM-dd hh:mm:ss a", Locale.getDefault());
-        String date = format1.format(myDate);
-        Random r = new Random();
-        int n = 100000 + r.nextInt(900000);
-        String code = String.valueOf(n);
         name = etName.getText().toString();
         surname = etSurname.getText().toString();
-        phoneNumber = masketPhoneNumber.getText().toString();
+        phoneNumber = maskPhoneNumber.getRawText();
+        generateCode();
         Intent intent = new Intent(GalleryActivity.this, InviteCodeActivity.class);
         intent.putExtra("username", username);
         intent.putExtra("email", email);
@@ -197,4 +196,6 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
+
+
 }
