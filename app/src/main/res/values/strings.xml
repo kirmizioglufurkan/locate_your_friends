@@ -36,6 +36,11 @@
     <string name="login_email_null_error">E-Mail adresi boş bırakılamaz!</string>
     <string name="login_password_null_error">Parola boş bırakılamaz!</string>
     <string name="login_wrong_info">Yanlış e-mail veya şifre girdiniz.</string>
+
+    <string name="login_alert_title">Bağlantı Sorunu!</string>
+    <string name="login_alert_text">Giriş yapmak için lütfen internet bağlantınızı aktif hale getiriniz.</string>
+    <string name="login_alert_positive_text">İnternet Ayarlarına Git</string>
+    <string name="login_alert_negative_text">Anladım</string>
     <!--Login Activity End-->
 
     <!--Register Activity-->
@@ -61,7 +66,7 @@
     <string name="register_check_information">Bilgileriniz kontrol ediliyor...</string>
 
     <string name="register_alert_title">Bağlantı Sorunu!</string>
-    <string name="register_alert_text">Kayıt işlemini tamamlayabilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
+    <string name="register_alert_text">Kayıt işlemine devam edebilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
     <string name="register_alert_positive_text">İnternet Ayarlarına Gidin</string>
     <string name="register_alert_negative_text">Anladım</string>
     <!--Register Activity End-->
@@ -92,7 +97,7 @@
     <string name="invite_code_failed">Kayıt işlemi sırasında bir hata oluştu.</string>
 
     <string name="invite_code_alert_title">Bağlantı Sorunu!</string>
-    <string name="invite_code_alert_text">Kayıt işlemine devam edebilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
+    <string name="invite_code_alert_text">Kayıt işlemini tamamlayabilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
     <string name="invite_code_alert_positive_text">İnternet Ayarlarına Git</string>
     <string name="invite_code_alert_negative_text">Anladım</string>
     <!--Invite Code Activity End-->
@@ -124,7 +129,17 @@
     <string name="user_exit_alert_text">Uygulamadan çıkmak istiyor musunuz?</string>
     <string name="user_exit_alert_positive_text">Çıkış Yap</string>
     <string name="user_exit_alert_negative_text">Geri Dön</string>
-
     <!--User Location Main Activity End-->
+
+    <!--Add Friend Activity-->
+    <string name="add_friend_text">Arkadaşınızı Ekleyin</string>
+    <string name="add_friend_sub_text">Lütfen arkadaşınızın davet kodunu aşağıdaki alana giriniz.</string>
+    <string name="add_friend_button_text">Ekle</string>
+
+    <string name="add_friend_alert_title">Bağlantı Sorunu!</string>
+    <string name="add_friend_alert_text">Kayıt işlemini tamamlayabilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
+    <string name="add_friend_alert_positive_text">İnternet Ayarlarına Git</string>
+    <string name="add_friend_alert_negative_text">Anladım</string>
+    <!--Add Friend Activity End-->
 
 </resources>

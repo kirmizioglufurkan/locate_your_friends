@@ -18,7 +18,8 @@ import java.util.ArrayList;
 
 public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btnLogin; private TextView tvRegister;
+    private Button btnLogin;
+    private TextView tvRegister;
     private PermissionManager permissionManager;
 
     @Override
@@ -29,7 +30,8 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         tvRegister = findViewById(R.id.tv_welcome_goToRegister);
         btnLogin.setOnClickListener(this);
         tvRegister.setOnClickListener(this);
-        permissionManager = new PermissionManager() {};
+        permissionManager = new PermissionManager() {
+        };
         permissionManager.checkAndRequestPermissions(this);
     }
 
@@ -37,21 +39,28 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_welcome_login: {
                 btnLogin.startAnimation(animation);
-                startActivity(new Intent(WelcomeActivity.this, LoginActivity.class)); finish(); break;}
+                startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
+                finish();
+                break;
+            }
             case R.id.tv_welcome_goToRegister: {
-                startActivity(new Intent(WelcomeActivity.this, RegisterActivity.class)); finish(); break;}
-            default: break;
+                startActivity(new Intent(WelcomeActivity.this, RegisterActivity.class));
+                finish();
+                break;
+            }
+            default:
+                break;
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        permissionManager.checkResult(requestCode,permissions,grantResults);
+        permissionManager.checkResult(requestCode, permissions, grantResults);
         ArrayList<String> denied_permissions = permissionManager.getStatus().get(0).denied;
-        if(denied_permissions.isEmpty())
+        if (denied_permissions.isEmpty())
             Toast.makeText(getApplicationContext(), "Permissions granted!", Toast.LENGTH_SHORT).show();
     }
 }

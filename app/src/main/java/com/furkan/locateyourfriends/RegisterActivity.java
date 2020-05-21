@@ -35,7 +35,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private FirebaseAuth auth;
     private ProgressDialog dialog;
     private String register_username, register_email, register_password;
-    private Button btnRegister; private ImageView imgBack;
+    private Button btnRegister;
+    private ImageView imgBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         dialog = new ProgressDialog(this);
 
         Intent intent = getIntent();
-        if(intent!=null){
+        if (intent != null) {
             layoutUsername.getEditText().setText(intent.getStringExtra("username"));
             layoutEmail.getEditText().setText(intent.getStringExtra("email"));
             layoutPassword.getEditText().setText(intent.getStringExtra("password"));
@@ -88,15 +90,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     //Checking input fields and calls goToGalleryActivity.
     private void register() {
-        if (!checkUsername()) {
-            return;
-        }
-        if (!checkEmail()) {
-            return;
-        }
-        if (!checkPassword()) {
-            return;
-        }
+        if (!checkUsername()) return;
+        if (!checkEmail()) return;
+        if (!checkPassword()) return;
+        if (!checkConnection()) return;
+
         layoutUsername.setErrorEnabled(false);
         layoutEmail.setErrorEnabled(false);
         layoutPassword.setErrorEnabled(false);
@@ -155,40 +153,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         return true;
     }
 
-    //Fetch username, email, password and goes to GalleryActivity.
-    private void goToGalleryActivity() {
-        register_username = layoutUsername.getEditText().getText().toString().trim();
-        register_email = layoutEmail.getEditText().getText().toString().trim();
-        register_password = layoutPassword.getEditText().getText().toString().trim();
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
 
+    private boolean checkConnection() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
-        if(activeInfo != null && activeInfo.isConnected()) {
-            dialog.setMessage(getResources().getString(R.string.register_check_information));
-            dialog.show();
-            dialog.setCancelable(false);
-            auth.fetchSignInMethodsForEmail(register_email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                @Override
-                public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                    if (task.isSuccessful()) {
-                        dialog.dismiss();
-                        boolean check = !task.getResult().getSignInMethods().isEmpty();
-                        //Is e-mail already registered?
-                        if (!check) {
-                            Intent intent = new Intent(RegisterActivity.this, GalleryActivity.class);
-                            intent.putExtra("username", register_username);
-                            intent.putExtra("email", register_email);
-                            intent.putExtra("password", register_password);
-                            startActivity(intent);
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                            finish();
-                        } else {
-                            dialog.dismiss();
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.register_email_duplicate_error), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            });
+        if (activeInfo != null && activeInfo.isConnected()) {
+            return true;
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
             builder.setCancelable(false);
@@ -198,14 +173,45 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             builder.setNegativeButton(getResources().getString(R.string.register_alert_negative_text), null);
             builder.setPositiveButton(getResources().getString(R.string.register_alert_positive_text), new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) { RegisterActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));}});
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    RegisterActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                }
+            });
             builder.show();
+            return false;
         }
+
     }
 
-    private void requestFocus(View view) {
-        if (view.requestFocus()) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
+    //Fetch username, email, password and goes to GalleryActivity.
+    private void goToGalleryActivity() {
+        register_username = layoutUsername.getEditText().getText().toString().trim();
+        register_email = layoutEmail.getEditText().getText().toString().trim();
+        register_password = layoutPassword.getEditText().getText().toString().trim();
+        dialog.setMessage(getResources().getString(R.string.register_check_information));
+        dialog.show();
+        dialog.setCancelable(false);
+        auth.fetchSignInMethodsForEmail(register_email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+            @Override
+            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                if (task.isSuccessful()) {
+                    dialog.dismiss();
+                    boolean check = !task.getResult().getSignInMethods().isEmpty();
+                    //Is e-mail already registered?
+                    if (!check) {
+                        Intent intent = new Intent(RegisterActivity.this, GalleryActivity.class);
+                        intent.putExtra("username", register_username);
+                        intent.putExtra("email", register_email);
+                        intent.putExtra("password", register_password);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                        finish();
+                    } else {
+                        dialog.dismiss();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.register_email_duplicate_error), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
     }
 }

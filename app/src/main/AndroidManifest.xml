@@ -22,6 +22,7 @@
         android:roundIcon="@mipmap/app_icon_new_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".AddFriendActivity"></activity>
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">

@@ -11,14 +11,16 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.chaos.view.PinView;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,9 +35,13 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
 
     private String username, email, password, name, surname, phoneNumber, date, code, userId;
     private Uri imageUri;
-    private FirebaseAuth auth; private FirebaseUser user; private DatabaseReference reference; private StorageReference storageReference;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
+    private DatabaseReference reference;
+    private StorageReference storageReference;
     private ProgressDialog dialog;
-    private TextView tvInviteCode; private Button btnInviteCode;
+    private PinView pwInviteCode;
+    private Button btnInviteCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +50,12 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
         auth = FirebaseAuth.getInstance();
         reference = FirebaseDatabase.getInstance().getReference().child("Users");
         storageReference = FirebaseStorage.getInstance().getReference().child("User_Images");
-        tvInviteCode = findViewById(R.id.tv_invite_code_code_text);
+        pwInviteCode = findViewById(R.id.pw_invite_code);
         btnInviteCode = findViewById(R.id.btn_invite_code);
         btnInviteCode.setOnClickListener(this);
         dialog = new ProgressDialog(this);
         Intent intent = getIntent();
-        if(intent != null) {
+        if (intent != null) {
             username = intent.getStringExtra("username");
             email = intent.getStringExtra("email");
             password = intent.getStringExtra("password");
@@ -59,66 +65,67 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
             date = intent.getStringExtra("date");
             code = intent.getStringExtra("code");
             imageUri = intent.getParcelableExtra("imageUri");
-            tvInviteCode.setText(code);
+            pwInviteCode.setText(code);
         }
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_invite_code: checkAndRegister(v); break;
+        switch (v.getId()) {
+            case R.id.btn_invite_code:
+                checkAndRegister();
+                break;
         }
     }
 
-    private void checkAndRegister(View v){
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
-        if(activeInfo != null && activeInfo.isConnected()){
-            dialog.setMessage(getResources().getString(R.string.invite_code_progress));
-            dialog.setCancelable(false);
-            dialog.show();
-            registerUser();
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(InviteCodeActivity.this);
-            builder.setCancelable(false)
-                    .setTitle(getResources().getString(R.string.invite_code_alert_title))
-                    .setIcon(R.drawable.wifi_off)
-                    .setMessage(getResources().getString(R.string.register_alert_text))
-                    .setNegativeButton(getResources().getString(R.string.register_alert_negative_text), null)
-                    .setPositiveButton(getResources().getString(R.string.register_alert_positive_text), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) { InviteCodeActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)); }})
-                    .show();}
+    private void checkAndRegister() {
+        if (!checkConnection()) return;
+        dialog.setMessage(getResources().getString(R.string.invite_code_progress));
+        dialog.setCancelable(false);
+        dialog.show();
+        registerUser();
     }
 
     private void registerUser() {
-        auth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     //Insert values in realtime database
                     CreateUser createUser = new CreateUser(username, email, password, name, surname, phoneNumber, code, false, 0, 0, "na");
-                    user = auth.getCurrentUser(); userId = user.getUid();
+                    user = auth.getCurrentUser();
+                    userId = user.getUid();
                     reference.child(userId).setValue(createUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 //Storage profile image to firebase
                                 StorageReference sr = storageReference.child(user.getUid() + ".jpg");
                                 sr.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> taskSnapshot) {
                                         if (taskSnapshot.isSuccessful()) {
-                                            String image_download_path = storageReference.child(user.getUid() + ".jpg").getDownloadUrl().toString();
+                                            String image_download_path = taskSnapshot.getResult().getMetadata().getReference().getDownloadUrl().toString();
                                             reference.child(user.getUid()).child("imageUrl").setValue(image_download_path).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        reference.child(user.getUid()).child("code").setValue(code);
+                                                        storageReference.child(user.getUid() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                            @Override
+                                                            public void onSuccess(Uri uri) {
+                                                                reference.child(user.getUid()).child("imageUrl").setValue(uri.toString());
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                reference.child(user.getUid()).child("imageUrl").setValue("Hatalı url");
+                                                            }
+                                                        });
                                                         dialog.dismiss();
+                                                        reference.child(user.getUid()).child("code").setValue(code);
                                                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.invite_code_successful), Toast.LENGTH_SHORT).show();
                                                         Intent intent = new Intent(InviteCodeActivity.this, LoginActivity.class);
-                                                        intent.putExtra("email",email);
+                                                        intent.putExtra("email", email);
                                                         startActivity(intent);
                                                         finish();
                                                     }
@@ -136,5 +143,27 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
+    }
+
+    private boolean checkConnection() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
+        if (activeInfo != null && activeInfo.isConnected())
+            return true;
+        else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(InviteCodeActivity.this);
+            builder.setCancelable(false)
+                    .setTitle(getResources().getString(R.string.invite_code_alert_title))
+                    .setIcon(R.drawable.wifi_off)
+                    .setMessage(getResources().getString(R.string.invite_code_alert_text))
+                    .setNegativeButton(getResources().getString(R.string.invite_code_alert_negative_text), null)
+                    .setPositiveButton(getResources().getString(R.string.invite_code_alert_positive_text), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            InviteCodeActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
+                    }).show();
+            return false;
+        }
     }
 }

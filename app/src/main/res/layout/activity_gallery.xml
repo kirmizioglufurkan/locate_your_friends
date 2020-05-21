@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:clickable="true"
@@ -15,52 +15,84 @@
         android:id="@+id/img_gallery_back"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginBottom="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back_button" />
 
     <TextView
-        android:layout_width="match_parent"
         android:id="@+id/tv_invite_code_main_text"
-        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:fontFamily="@font/bold"
         android:text="@string/gallery_profile_text"
         android:textColor="@color/background_gray"
-        android:textSize="40sp" />
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="@+id/img_gallery_back"
+        app:layout_constraintTop_toBottomOf="@+id/img_gallery_back" />
 
     <TextView
         android:id="@+id/invite_code_sub_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:alpha="0.5"
         android:fontFamily="@font/light"
         android:text="@string/gallery_image_text"
         android:textColor="@color/background_gray"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/tv_invite_code_main_text"
+        app:layout_constraintTop_toBottomOf="@+id/tv_invite_code_main_text" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_gallery_profile"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:onClick="selectImage"
+        android:src="@drawable/upload_profile"
+        app:layout_constraintEnd_toEndOf="@+id/invite_code_sub_text"
+        app:layout_constraintStart_toStartOf="@+id/invite_code_sub_text"
+        app:layout_constraintTop_toBottomOf="@+id/invite_code_sub_text" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_gallery_profile"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:onClick="selectImage"
-            android:src="@drawable/upload_profile" />
-    </LinearLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_gallery_phone"
+        style="@style/CustomTextInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="@string/gallery_phone_hint"
+        app:counterEnabled="true"
+        app:counterMaxLength="12"
+        app:counterTextColor="@color/background_gray"
+        app:hintAnimationEnabled="true"
+        app:layout_constraintEnd_toEndOf="@+id/til_gallery_surname"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/til_gallery_surname"
+        app:layout_constraintTop_toBottomOf="@+id/til_gallery_surname"
+        app:startIconDrawable="@drawable/phone">
+
+        <com.santalu.maskedittext.MaskEditText
+            android:id="@+id/masket_gallery_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:textStyle="bold"
+            app:met_mask="+##(###) ### ## ##" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_gallery_name"
-        android:layout_width="match_parent"
         style="@style/CustomTextInput"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:hint="@string/gallery_name_hint"
+        app:layout_constraintEnd_toEndOf="@+id/invite_code_sub_text"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/invite_code_sub_text"
+        app:layout_constraintTop_toBottomOf="@+id/img_gallery_profile"
         app:startIconDrawable="@drawable/username">
 
         <EditText
@@ -73,10 +105,17 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_gallery_surname"
-        android:layout_width="match_parent"
         style="@style/CustomTextInput"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:hint="@string/gallery_surname_hint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/til_gallery_name"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/til_gallery_name"
+        app:layout_constraintTop_toBottomOf="@+id/til_gallery_name"
+        app:layout_constraintVertical_bias="0.023"
         app:startIconDrawable="@drawable/username">
 
         <EditText
@@ -87,30 +126,12 @@
             android:textStyle="bold" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_gallery_phone"
-        android:layout_width="match_parent"
-        style="@style/CustomTextInput"
-
-        android:layout_height="wrap_content"
-        android:hint="@string/gallery_phone_hint"
-        app:counterEnabled="true"
-        app:counterMaxLength="12"
-        app:counterTextColor="@color/background_gray"
-        app:startIconDrawable="@drawable/phone">
-
-        <com.santalu.maskedittext.MaskEditText
-            android:id="@+id/masket_gallery_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="phone"
-            android:textStyle="bold"
-            app:met_mask="+##(###) ### ## ##" />
-    </com.google.android.material.textfield.TextInputLayout>
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_gallery"
         style="@style/CustomButton"
-        android:text="@string/register_button_text" />
+        android:layout_marginTop="20dp"
+        android:text="@string/register_button_text"
+        app:layout_constraintStart_toStartOf="@+id/til_gallery_phone"
+        app:layout_constraintTop_toBottomOf="@+id/til_gallery_phone" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

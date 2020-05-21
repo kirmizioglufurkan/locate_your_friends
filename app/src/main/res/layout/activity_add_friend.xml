@@ -8,38 +8,46 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:padding="24dp"
-    tools:context=".InviteCodeActivity">
+    tools:context=".AddFriendActivity">
+
+    <ImageView
+        android:id="@+id/img_add_friend_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/back_button" />
 
     <TextView
-        android:id="@+id/welcome"
+        android:id="@+id/add_friend_main_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="@font/bold"
-        android:text="@string/invite_code_text"
+        android:text="@string/add_friend_text"
         android:textColor="@color/background_gray"
         android:textSize="40sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/img_add_friend_back"
+        app:layout_constraintTop_toBottomOf="@+id/img_add_friend_back" />
 
     <TextView
-        android:id="@+id/invite_code_sub_text"
+        android:id="@+id/add_friend_sub_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_invite_code_main_text"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:alpha="0.5"
         android:fontFamily="@font/light"
-        android:text="@string/invite_code_sub_text"
+        android:text="@string/add_friend_sub_text"
         android:textColor="@color/background_gray"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/welcome"
-        app:layout_constraintStart_toStartOf="@+id/welcome"
-        app:layout_constraintTop_toBottomOf="@+id/welcome" />
+        app:layout_constraintStart_toStartOf="@+id/add_friend_main_text"
+        app:layout_constraintTop_toBottomOf="@+id/add_friend_main_text" />
 
     <com.chaos.view.PinView
-        android:id="@+id/pw_invite_code"
+        android:id="@+id/pw_add_friend_code"
         style="@style/PinWidget.PinView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,23 +63,25 @@
         app:hideLineWhenFilled="true"
         app:itemCount="6"
         app:itemHeight="50dp"
-        app:itemRadius="6dp"
+        app:itemRadius="8dp"
         app:itemSpacing="10dp"
         app:itemWidth="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/invite_code_sub_text"
-        app:layout_constraintTop_toBottomOf="@+id/invite_code_sub_text"
+        app:layout_constraintEnd_toEndOf="@+id/add_friend_sub_text"
+        app:layout_constraintHorizontal_bias="0.538"
+        app:layout_constraintStart_toStartOf="@+id/add_friend_sub_text"
+        app:layout_constraintTop_toBottomOf="@+id/add_friend_sub_text"
         app:lineColor="@color/background_gray"
         app:lineWidth="2dp"
         app:viewType="rectangle" />
 
     <Button
-        android:id="@+id/btn_invite_code"
+        android:id="@+id/btn_add_friend"
         style="@style/CustomButton"
-        android:layout_marginTop="40dp"
-        android:text="@string/invite_code_button_text"
-        app:layout_constraintStart_toStartOf="@+id/pw_invite_code"
-        app:layout_constraintTop_toBottomOf="@+id/pw_invite_code" />
+        android:layout_marginTop="60dp"
+        android:text="@string/add_friend_button_text"
+        app:layout_constraintEnd_toEndOf="@+id/pw_add_friend_code"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/pw_add_friend_code"
+        app:layout_constraintTop_toBottomOf="@+id/pw_add_friend_code" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
