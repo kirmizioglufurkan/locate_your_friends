@@ -20,11 +20,11 @@
         android:id="@+id/welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:fontFamily="@font/bold"
         android:text="@string/register_main_text"
         android:textColor="@color/background_gray"
-        android:textSize="25sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="@+id/img_register_back"
         app:layout_constraintStart_toStartOf="@+id/img_register_back"
         app:layout_constraintTop_toBottomOf="@+id/img_register_back" />
@@ -87,6 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
+            android:textSize="15sp"
             android:textStyle="bold" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,6 +107,7 @@
             android:id="@+id/et_register_password_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="15sp"
             android:inputType="textPassword"
             android:textStyle="bold" />
     </com.google.android.material.textfield.TextInputLayout>

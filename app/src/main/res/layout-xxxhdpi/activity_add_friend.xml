@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/img_add_friend_back"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/back_button" />
@@ -27,7 +27,7 @@
         android:fontFamily="@font/bold"
         android:text="@string/add_friend_text"
         android:textColor="@color/background_gray"
-        android:textSize="40sp"
+        android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/img_add_friend_back"
         app:layout_constraintTop_toBottomOf="@+id/img_add_friend_back" />
@@ -42,7 +42,7 @@
         android:fontFamily="@font/light"
         android:text="@string/add_friend_sub_text"
         android:textColor="@color/background_gray"
-        android:textSize="20sp"
+        android:textSize="25sp"
         app:layout_constraintStart_toStartOf="@+id/add_friend_main_text"
         app:layout_constraintTop_toBottomOf="@+id/add_friend_main_text" />
 
@@ -57,7 +57,7 @@
         android:inputType="number"
         android:itemBackground="@color/background_white"
         android:textColor="@color/background_red"
-        android:textSize="18sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:cursorWidth="2dp"
         app:hideLineWhenFilled="true"
@@ -79,6 +79,7 @@
         style="@style/CustomButton"
         android:layout_marginTop="60dp"
         android:text="@string/add_friend_button_text"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="@+id/pw_add_friend_code"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/pw_add_friend_code"

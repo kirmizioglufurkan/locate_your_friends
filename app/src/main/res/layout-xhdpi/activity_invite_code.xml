@@ -23,10 +23,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/invite_code_sub_text"
+        android:id="@+id/profile_sub_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_invite_code_main_text"
+        android:layout_below="@+id/tv_profile_main_text"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:alpha="0.5"
@@ -62,8 +62,8 @@
         app:itemWidth="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/invite_code_sub_text"
-        app:layout_constraintTop_toBottomOf="@+id/invite_code_sub_text"
+        app:layout_constraintStart_toStartOf="@+id/profile_sub_text"
+        app:layout_constraintTop_toBottomOf="@+id/profile_sub_text"
         app:lineColor="@color/background_gray"
         app:lineWidth="2dp"
         app:viewType="rectangle" />

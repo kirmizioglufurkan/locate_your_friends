@@ -22,7 +22,7 @@
         android:id="@+id/welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/bold"
         android:text="@string/login_main_text"
         android:textColor="@color/background_gray"
@@ -37,7 +37,7 @@
         style="@style/CustomTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:hint="@string/register_email_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -50,6 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
+            android:textSize="15sp"
             android:textStyle="bold" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -58,7 +59,7 @@
         style="@style/CustomTextInputPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         android:hint="@string/register_password_hint"
         app:layout_constraintEnd_toEndOf="@+id/til_login_email"
         app:layout_constraintHorizontal_bias="0.0"
@@ -71,13 +72,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
+            android:textSize="15sp"
             android:textStyle="bold" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_login"
         style="@style/CustomButton"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="15dp"
         android:text="@string/login_button_text"
         android:textSize="15dp"
         app:layout_constraintStart_toStartOf="@+id/til_login_password"
@@ -88,7 +90,7 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintBottom_toTopOf="@+id/not_member"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

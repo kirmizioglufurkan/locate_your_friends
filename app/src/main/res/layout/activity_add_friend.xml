@@ -63,7 +63,7 @@
         app:hideLineWhenFilled="true"
         app:itemCount="6"
         app:itemHeight="50dp"
-        app:itemRadius="8dp"
+        app:itemRadius="6dp"
         app:itemSpacing="10dp"
         app:itemWidth="50dp"
         app:layout_constraintEnd_toEndOf="@+id/add_friend_sub_text"

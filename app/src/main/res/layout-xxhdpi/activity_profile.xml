@@ -9,13 +9,12 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:padding="24dp"
-    tools:context=".GalleryActivity">
+    tools:context=".ProfileActivity">
 
     <ImageView
-        android:id="@+id/img_gallery_back"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="20dp"
+        android:id="@+id/img_profile_back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,48 +22,48 @@
         app:srcCompat="@drawable/back_button" />
 
     <TextView
-        android:id="@+id/tv_invite_code_main_text"
+        android:id="@+id/tv_profile_main_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/bold"
         android:text="@string/gallery_profile_text"
         android:textColor="@color/background_gray"
-        android:textSize="40sp"
-        app:layout_constraintStart_toStartOf="@+id/img_gallery_back"
-        app:layout_constraintTop_toBottomOf="@+id/img_gallery_back" />
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="@+id/img_profile_back"
+        app:layout_constraintTop_toBottomOf="@+id/img_profile_back" />
 
     <TextView
-        android:id="@+id/invite_code_sub_text"
+        android:id="@+id/profile_sub_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:alpha="0.5"
         android:fontFamily="@font/light"
         android:text="@string/gallery_image_text"
         android:textColor="@color/background_gray"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/tv_invite_code_main_text"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_profile_main_text"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/tv_invite_code_main_text"
-        app:layout_constraintTop_toBottomOf="@+id/tv_invite_code_main_text" />
+        app:layout_constraintStart_toStartOf="@+id/tv_profile_main_text"
+        app:layout_constraintTop_toBottomOf="@+id/tv_profile_main_text" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_gallery_profile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:id="@+id/img_profile_picture"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:onClick="selectImage"
         android:src="@drawable/upload_profile"
-        app:layout_constraintBottom_toTopOf="@+id/til_gallery_name"
-        app:layout_constraintEnd_toEndOf="@+id/invite_code_sub_text"
-        app:layout_constraintStart_toStartOf="@+id/invite_code_sub_text"
-        app:layout_constraintTop_toBottomOf="@+id/invite_code_sub_text" />
+        app:layout_constraintBottom_toTopOf="@+id/til_profile_name"
+        app:layout_constraintEnd_toEndOf="@+id/tv_profile_main_text"
+        app:layout_constraintStart_toStartOf="@+id/profile_sub_text"
+        app:layout_constraintTop_toBottomOf="@+id/profile_sub_text" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_gallery_phone"
+        android:id="@+id/til_profile_phone"
         style="@style/CustomTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -74,14 +73,14 @@
         app:counterMaxLength="18"
         app:counterTextColor="@color/background_gray"
         app:hintAnimationEnabled="true"
-        app:layout_constraintEnd_toEndOf="@+id/til_gallery_surname"
+        app:layout_constraintEnd_toEndOf="@+id/til_profile_surname"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/til_gallery_surname"
-        app:layout_constraintTop_toBottomOf="@+id/til_gallery_surname"
+        app:layout_constraintStart_toStartOf="@+id/til_profile_surname"
+        app:layout_constraintTop_toBottomOf="@+id/til_profile_surname"
         app:startIconDrawable="@drawable/phone">
 
         <com.santalu.maskedittext.MaskEditText
-            android:id="@+id/masket_gallery_phone"
+            android:id="@+id/masket_profile_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="phone"
@@ -90,20 +89,20 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_gallery_name"
+        android:id="@+id/til_profile_name"
         style="@style/CustomTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:hint="@string/gallery_name_hint"
-        app:layout_constraintEnd_toEndOf="@+id/invite_code_sub_text"
+        app:layout_constraintEnd_toEndOf="@+id/profile_sub_text"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/invite_code_sub_text"
-        app:layout_constraintTop_toBottomOf="@+id/img_gallery_profile"
+        app:layout_constraintStart_toStartOf="@+id/profile_sub_text"
+        app:layout_constraintTop_toBottomOf="@+id/img_profile_picture"
         app:startIconDrawable="@drawable/username">
 
         <EditText
-            android:id="@+id/et_gallery_name"
+            android:id="@+id/et_profile_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName|textCapSentences"
@@ -111,22 +110,22 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_gallery_surname"
+        android:id="@+id/til_profile_surname"
         style="@style/CustomTextInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:hint="@string/gallery_surname_hint"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/til_gallery_name"
+        app:layout_constraintEnd_toEndOf="@+id/til_profile_name"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/til_gallery_name"
-        app:layout_constraintTop_toBottomOf="@+id/til_gallery_name"
+        app:layout_constraintStart_toStartOf="@+id/til_profile_name"
+        app:layout_constraintTop_toBottomOf="@+id/til_profile_name"
         app:layout_constraintVertical_bias="0.023"
         app:startIconDrawable="@drawable/username">
 
         <EditText
-            android:id="@+id/et_gallery_surname"
+            android:id="@+id/et_profile_surname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName|textCapSentences"
@@ -134,11 +133,13 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_gallery"
+        android:id="@+id/btn_profile"
         style="@style/CustomButton"
+        android:layout_marginTop="20dp"
         android:text="@string/register_button_text"
-        app:layout_constraintEnd_toEndOf="@+id/til_gallery_phone"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/til_profile_phone"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/til_gallery_phone"
-        app:layout_constraintTop_toBottomOf="@+id/til_gallery_phone" />
+        app:layout_constraintStart_toStartOf="@+id/til_profile_phone"
+        app:layout_constraintTop_toBottomOf="@+id/til_profile_phone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

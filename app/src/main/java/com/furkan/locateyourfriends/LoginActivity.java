@@ -141,7 +141,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void requestFocus(View v) {
         if (v.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
+        } else
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     private boolean checkConnection() {

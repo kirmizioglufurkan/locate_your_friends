@@ -28,14 +28,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class AddFriendActivity extends AppCompatActivity implements View.OnClickListener {
-    PinView pwInviteCode;
-    ImageView imgBack;
-    Button btnAddFriend;
-    FirebaseAuth auth;
-    FirebaseUser firebaseUser;
-    DatabaseReference reference;
-    User user = new User();
-    Friendship friendship = new Friendship();
+    private PinView pwInviteCode;
+    private ImageView imgBack;
+    private Button btnAddFriend;
+    private FirebaseAuth auth;
+    private FirebaseUser firebaseUser;
+    private DatabaseReference reference;
+    private Friendship friendship = new Friendship();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +54,15 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add_friend: {
+                String inviteCode = pwInviteCode.getText().toString();
                 if (!checkConnection()) return;
-                setFriend();
+                if (!checkEmpty(inviteCode)) return;
+                setFriend(inviteCode);
                 break;
             }
             case R.id.img_add_friend_back:
                 goToUserLocationMainActivity();
+                finish();
                 break;
         }
     }
@@ -88,19 +90,21 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void setFriend() {
-        String inviteCode = pwInviteCode.getText().toString();
+    private void setFriend(String inviteCode) {
         reference.orderByChild("code").equalTo(inviteCode).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    user = ds.getValue(User.class);
-                    friendship.setCode(user.code);
-                    friendship.setName(user.name);
-                    friendship.setSurname(user.surname);
-                    reference.child(firebaseUser.getUid()).child("friends").push().setValue(friendship);
-                    Toast.makeText(getApplicationContext(), friendship.name + " " + friendship.surname + " artık arkadaşınız :)", Toast.LENGTH_SHORT).show();
-                }
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        User user = ds.getValue(User.class);
+                        friendship.setCode(user.code);
+                        friendship.setName(user.name);
+                        friendship.setSurname(user.surname);
+                        reference.child(firebaseUser.getUid()).child("friends").push().setValue(friendship);
+                        Toast.makeText(getApplicationContext(), friendship.name + " " + friendship.surname + getResources().getString(R.string.add_friend_successful), Toast.LENGTH_SHORT).show();
+                    }
+                } else
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.add_friend_failed), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -116,4 +120,13 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
         startActivity(new Intent(AddFriendActivity.this, UserLocationMainActivity.class));
         finish();
     }
+
+    private boolean checkEmpty(String codeText) {
+        if (codeText.isEmpty()) {
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.add_friend_null_error), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
 }

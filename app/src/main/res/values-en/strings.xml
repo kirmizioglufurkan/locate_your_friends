@@ -114,7 +114,10 @@
     <string name="user_friend_location_null_error">isn"'"t online right now!</string>
 
     <string name="action_location_settings">GPS Settings</string>
+    <string name="user_sharing_settings_title">Sharing Settings</string>
+    <string name="user_sharing_settings_alert_title">You can change your sharing settings.</string>
     <string name="user_sharing_enable">Start Sharing</string>
+    <string name="user_sharing_nothing">Go Back</string>
     <string name="user_sharing_disable">Stop Sharing</string>
     <string name="user_sharing_enabled">You"'"re tracking now.</string>
     <string name="user_sharing_disabled">You"'"re hiding now.</string>
@@ -147,6 +150,9 @@
     <string name="add_friend_alert_text">Please enable your internet connection in order to keep adding your friend.</string>
     <string name="add_friend_alert_positive_text">Go To Connection Settings</string>
     <string name="add_friend_alert_negative_text">Got It</string>
+    <string name="add_friend_successful">artık arkadaşınız :)</string>
+    <string name="add_friend_failed">Girdiğiniz kod herhangi bir kullanıcıya ait değil!</string>
+    <string name="add_friend_null_error">Lütfen geçerli bir davet kodu giriniz.</string>
     <!--Add Friend Activity End-->
 
 </resources>

@@ -22,12 +22,12 @@
         android:id="@+id/add_friend_main_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/bold"
         android:text="@string/add_friend_text"
         android:textColor="@color/background_gray"
-        android:textSize="28sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/img_add_friend_back"
         app:layout_constraintTop_toBottomOf="@+id/img_add_friend_back" />
@@ -42,7 +42,7 @@
         android:fontFamily="@font/light"
         android:text="@string/add_friend_sub_text"
         android:textColor="@color/background_gray"
-        android:textSize="14sp"
+        android:textSize="15sp"
         app:layout_constraintStart_toStartOf="@+id/add_friend_main_text"
         app:layout_constraintTop_toBottomOf="@+id/add_friend_main_text" />
 
@@ -57,7 +57,7 @@
         android:inputType="number"
         android:itemBackground="@color/background_white"
         android:textColor="@color/background_red"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:cursorWidth="2dp"
         app:hideLineWhenFilled="true"

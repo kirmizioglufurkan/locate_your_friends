@@ -118,7 +118,10 @@
 
 
     <string name="action_location_settings">Configuraciones GPS</string>
+    <string name="user_sharing_settings_title">Compartiendo ajustes</string>
+    <string name="user_sharing_settings_alert_title">Puede cambiar su configuración de uso compartido.</string>
     <string name="user_sharing_enable">Empieza a compartir</string>
+    <string name="user_sharing_nothing">Entendido</string>
     <string name="user_sharing_disable">Deja de compartir</string>
     <string name="user_sharing_enabled">Ahora te siguen :)</string>
     <string name="user_sharing_disabled">Ahora te estas escondiendo.</string>
@@ -152,6 +155,9 @@
     <string name="add_friend_alert_text">Habilite su conexión a Internet para seguir agregando a su amigo.</string>
     <string name="add_friend_alert_positive_text">Ir a la configuración de conexión</string>
     <string name="add_friend_alert_negative_text">Entendido</string>
+    <string name="add_friend_successful">artık arkadaşınız :)</string>
+    <string name="add_friend_failed">Girdiğiniz kod herhangi bir kullanıcıya ait değil!</string>
+    <string name="add_friend_null_error">Lütfen geçerli bir davet kodu giriniz.</string>
     <!--Add Friend Activity End-->
 
 </resources>

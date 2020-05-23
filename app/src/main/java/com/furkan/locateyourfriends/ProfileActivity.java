@@ -27,7 +27,7 @@ import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class GalleryActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String username, email, password, name, surname, phoneNumber, date, code;
     private TextInputLayout nameLayout, surnameLayout, phoneNumberLayout;
@@ -35,25 +35,25 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     private MaskEditText maskPhoneNumber;
     private CircleImageView circleImageView;
     private Uri resultUri;
-    private Button btnGallery;
+    private Button btnProfile;
     private ImageView imgBack;
     private Date myDate = new Date();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery);
-        circleImageView = findViewById(R.id.img_gallery_profile);
+        setContentView(R.layout.activity_profile);
+        circleImageView = findViewById(R.id.img_profile_picture);
 
-        nameLayout = findViewById(R.id.til_gallery_name);
-        surnameLayout = findViewById(R.id.til_gallery_surname);
-        phoneNumberLayout = findViewById(R.id.til_gallery_phone);
-        etName = findViewById(R.id.et_gallery_name);
-        etSurname = findViewById(R.id.et_gallery_surname);
-        maskPhoneNumber = findViewById(R.id.masket_gallery_phone);
-        btnGallery = findViewById(R.id.btn_gallery);
-        btnGallery.setOnClickListener(this);
-        imgBack = findViewById(R.id.img_gallery_back);
+        nameLayout = findViewById(R.id.til_profile_name);
+        surnameLayout = findViewById(R.id.til_profile_surname);
+        phoneNumberLayout = findViewById(R.id.til_profile_phone);
+        etName = findViewById(R.id.et_profile_name);
+        etSurname = findViewById(R.id.et_profile_surname);
+        maskPhoneNumber = findViewById(R.id.masket_profile_phone);
+        btnProfile = findViewById(R.id.btn_profile);
+        btnProfile.setOnClickListener(this);
+        imgBack = findViewById(R.id.img_profile_back);
         imgBack.setOnClickListener(this);
 
         Intent intent = getIntent();
@@ -67,10 +67,10 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_gallery:
+            case R.id.btn_profile:
                 saveProfileInfo();
                 break;
-            case R.id.img_gallery_back:
+            case R.id.img_profile_back:
                 goBack();
                 break;
             default:
@@ -78,33 +78,28 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-
-    public void selectImage(View v) {
-        Intent i = new Intent();
-        i.setAction(Intent.ACTION_GET_CONTENT);
-        i.setType("image/*");
-        startActivityForResult(i, 12);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 12 && resultCode == RESULT_OK && data != null) {
-            CropImage.activity()
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1, 1)
-                    .start(this);
-        }
-
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                resultUri = result.getUri();
-                circleImageView.setImageURI(resultUri);
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-            }
-        }
+    private void saveProfileInfo() {
+        if (!checkName()) return;
+        if (!checkSurname()) return;
+        if (!checkPhoneNumber()) return;
+        name = etName.getText().toString();
+        surname = etSurname.getText().toString();
+        phoneNumber = maskPhoneNumber.getRawText();
+        generateCode();
+        Intent intent = new Intent(ProfileActivity.this, InviteCodeActivity.class);
+        intent.putExtra("username", username);
+        intent.putExtra("email", email);
+        intent.putExtra("password", password);
+        intent.putExtra("name", name);
+        intent.putExtra("surname", surname);
+        intent.putExtra("phoneNumber", phoneNumber);
+        intent.putExtra("date", date);
+        intent.putExtra("isSharing", "false");
+        intent.putExtra("code", code);
+        intent.putExtra("imageUri", resultUri);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        finish();
     }
 
     private boolean checkName() {
@@ -146,6 +141,34 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         return true;
     }
 
+    public void selectImage(View v) {
+        Intent i = new Intent();
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        i.setType("image/*");
+        startActivityForResult(i, 12);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 12 && resultCode == RESULT_OK && data != null) {
+            CropImage.activity()
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(1, 1)
+                    .start(this);
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                resultUri = result.getUri();
+                circleImageView.setImageURI(resultUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+    }
+
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -153,7 +176,6 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void generateCode() {
-
         SimpleDateFormat format1 = new SimpleDateFormat("yyyy--MM-dd hh:mm:ss a", Locale.getDefault());
         format1.format(myDate);
         Random r = new Random();
@@ -161,34 +183,10 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         code = String.valueOf(n);
     }
 
-    private void saveProfileInfo() {
-        if (!checkName()) return;
-        if (!checkSurname()) return;
-        if (!checkPhoneNumber()) return;
-        name = etName.getText().toString();
-        surname = etSurname.getText().toString();
-        phoneNumber = maskPhoneNumber.getRawText();
-        generateCode();
-        Intent intent = new Intent(GalleryActivity.this, InviteCodeActivity.class);
-        intent.putExtra("username", username);
-        intent.putExtra("email", email);
-        intent.putExtra("password", password);
-        intent.putExtra("name", name);
-        intent.putExtra("surname", surname);
-        intent.putExtra("phoneNumber", phoneNumber);
-        intent.putExtra("date", date);
-        intent.putExtra("isSharing", "false");
-        intent.putExtra("code", code);
-        intent.putExtra("imageUri", resultUri);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        finish();
-    }
-
     private void goBack() {
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
         imgBack.startAnimation(animation);
-        Intent intent = new Intent(GalleryActivity.this, RegisterActivity.class);
+        Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
         intent.putExtra("username", username);
         intent.putExtra("email", email);
         intent.putExtra("password", password);
@@ -196,6 +194,5 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
-
 
 }

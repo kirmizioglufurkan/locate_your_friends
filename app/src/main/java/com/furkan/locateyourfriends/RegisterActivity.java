@@ -62,9 +62,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         Intent intent = getIntent();
         if (intent != null) {
-            layoutUsername.getEditText().setText(intent.getStringExtra("username"));
-            layoutEmail.getEditText().setText(intent.getStringExtra("email"));
-            layoutPassword.getEditText().setText(intent.getStringExtra("password"));
+            etUsername.setText(intent.getStringExtra("username"));
+            etEmail.setText(intent.getStringExtra("email"));
         }
     }
 
@@ -156,7 +155,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
+        } else
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     private boolean checkConnection() {
@@ -199,7 +199,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     boolean check = !task.getResult().getSignInMethods().isEmpty();
                     //Is e-mail already registered?
                     if (!check) {
-                        Intent intent = new Intent(RegisterActivity.this, GalleryActivity.class);
+                        Intent intent = new Intent(RegisterActivity.this, ProfileActivity.class);
                         intent.putExtra("username", register_username);
                         intent.putExtra("email", register_email);
                         intent.putExtra("password", register_password);
@@ -209,6 +209,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     } else {
                         dialog.dismiss();
                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.register_email_duplicate_error), Toast.LENGTH_SHORT).show();
+                        etPassword.getText().clear();
+                        etPasswordConfirm.getText().clear();
                     }
                 }
             }

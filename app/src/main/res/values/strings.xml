@@ -112,7 +112,11 @@
     <string name="user_gps_whatsApp_text">Şu an buradayım: https://www.google.com/maps/@</string>
     <string name="user_sign_out">Oturumu Kapat</string>
     <string name="action_location_settings">GPS Ayarları</string>
+
+    <string name="user_sharing_settings_title">Paylaşım Ayarları</string>
+    <string name="user_sharing_settings_alert_title">Paylaşım ayarlarınızı değiştirebilirsiniz.</string>
     <string name="user_sharing_enable">Paylaşımı Başlat</string>
+    <string name="user_sharing_nothing">Geri Dön</string>
     <string name="user_sharing_disable">Paylaşımı Durdur</string>
     <string name="user_sharing_enabled">Artık takip ediliyorsunuz :)</string>
     <string name="user_sharing_disabled">Artık gizleniyorsunuz.</string>
@@ -149,6 +153,9 @@
     <string name="add_friend_alert_text">Kayıt işlemini tamamlayabilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
     <string name="add_friend_alert_positive_text">İnternet Ayarlarına Git</string>
     <string name="add_friend_alert_negative_text">Anladım</string>
+    <string name="add_friend_successful">artık arkadaşınız :)</string>
+    <string name="add_friend_failed">Girdiğiniz kod herhangi bir kullanıcıya ait değil!</string>
+    <string name="add_friend_null_error">Lütfen geçerli bir davet kodu giriniz.</string>
     <!--Add Friend Activity End-->
 
 </resources>
