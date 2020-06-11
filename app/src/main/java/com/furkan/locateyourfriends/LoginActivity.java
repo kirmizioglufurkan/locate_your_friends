@@ -1,12 +1,7 @@
 package com.furkan.locateyourfriends;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,12 +33,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextInputLayout emailLayout, passwordLayout;
     private EditText etEmail, etPassword;
     private String user_email, user_password;
+    private Utility utility = new Utility();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         btnLogin = findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(this);
         goToRegister = findViewById(R.id.tv_login_goToRegister);
@@ -58,35 +52,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         pbLogin = findViewById(R.id.progressbar_login);
         pbLogin.setVisibility(View.INVISIBLE);
         auth = FirebaseAuth.getInstance();
-
         Intent intent = getIntent();
         if (intent != null)
             emailLayout.getEditText().setText(intent.getStringExtra("email"));
     }
 
-    //Authorizes to Firebase.
-    private void login() {
-        if (!checkEmail()) return;
-        if (!checkPassword()) return;
-        if (!checkConnection()) return;
-        pbLogin.setVisibility(View.VISIBLE);
-        user_email = etEmail.getText().toString().trim();
-        user_password = etPassword.getText().toString().trim();
-        auth.signInWithEmailAndPassword(user_email, user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    pbLogin.setVisibility(View.VISIBLE);
-                    Intent intent = new Intent(LoginActivity.this, UserLocationMainActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_wrong_info), Toast.LENGTH_SHORT).show();
-                    pbLogin.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
-    }
 
     // Actions for every possible click.
     @Override
@@ -111,6 +81,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    //Authorizes to Firebase.
+    private void login() {
+        if (!checkEmail()) return;
+        if (!checkPassword()) return;
+        if (!utility.checkInternetConnection(this, getResources().getString(R.string.login_alert_text)))
+            return;
+        pbLogin.setVisibility(View.VISIBLE);
+        user_email = etEmail.getText().toString().trim();
+        user_password = etPassword.getText().toString().trim();
+        auth.signInWithEmailAndPassword(user_email, user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    pbLogin.setVisibility(View.VISIBLE);
+                    Intent intent = new Intent(LoginActivity.this, UserLocationMainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_wrong_info), Toast.LENGTH_SHORT).show();
+                    pbLogin.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+    }
+
     private boolean checkEmail() {
         String emailUser = emailLayout.getEditText().getText().toString().trim();
         if (emailUser.isEmpty()) {
@@ -118,7 +113,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             requestFocus(etEmail);
             return false;
         }
-
         if (!Patterns.EMAIL_ADDRESS.matcher(emailUser).matches()) {
             emailLayout.setError(getResources().getString(R.string.register_email_wrong_error));
             requestFocus(etEmail);
@@ -145,26 +139,4 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
-    private boolean checkConnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeInfo != null && activeInfo.isConnected())
-            return true;
-        else {
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(LoginActivity.this);
-            builder.setCancelable(false);
-            builder.setIcon(R.drawable.wifi_off);
-            builder.setTitle(getResources().getString(R.string.login_alert_title));
-            builder.setMessage(getResources().getString(R.string.login_alert_text));
-            builder.setNegativeButton(getResources().getString(R.string.login_alert_negative_text), null);
-            builder.setPositiveButton(getResources().getString(R.string.login_alert_positive_text), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    LoginActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                }
-            });
-            builder.show();
-            return false;
-        }
-    }
 }

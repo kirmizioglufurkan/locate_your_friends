@@ -26,7 +26,7 @@
         android:fontFamily="@font/bold"
         android:text="@string/login_main_text"
         android:textColor="@color/background_gray"
-        android:textSize="30sp"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/img_login_back"
@@ -79,7 +79,7 @@
         style="@style/CustomButton"
         android:layout_marginTop="20dp"
         android:text="@string/login_button_text"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/til_login_password"
         app:layout_constraintTop_toBottomOf="@+id/til_login_password" />
 
@@ -93,7 +93,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_login"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.154" />
 
     <TextView
         android:id="@+id/not_member"
@@ -102,7 +102,7 @@
         android:fontFamily="@font/light"
         android:text="@string/login_member_text"
         android:textColor="@color/background_gray"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/btn_login"
         app:layout_constraintTop_toBottomOf="@+id/btn_login"
@@ -112,16 +112,17 @@
         android:id="@+id/tv_login_goToRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:fontFamily="@font/semibold"
         android:text="@string/login_register_text"
         android:textColor="@color/background_red"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/not_member"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.016"
         app:layout_constraintStart_toEndOf="@+id/not_member"
         app:layout_constraintTop_toTopOf="@+id/not_member"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

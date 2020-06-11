@@ -1,20 +1,14 @@
 package com.furkan.locateyourfriends;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.chaos.view.PinView;
@@ -42,6 +36,7 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
     private ProgressDialog dialog;
     private PinView pwInviteCode;
     private Button btnInviteCode;
+    private Utility utility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +74,8 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void checkAndRegister() {
-        if (!checkConnection()) return;
+        if (!utility.checkInternetConnection(this, getResources().getString(R.string.invite_code_alert_text)))
+            return;
         dialog.setMessage(getResources().getString(R.string.invite_code_progress));
         dialog.setCancelable(false);
         dialog.show();
@@ -143,28 +139,6 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
-    }
-
-    private boolean checkConnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeInfo != null && activeInfo.isConnected())
-            return true;
-        else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(InviteCodeActivity.this);
-            builder.setCancelable(false)
-                    .setTitle(getResources().getString(R.string.invite_code_alert_title))
-                    .setIcon(R.drawable.wifi_off)
-                    .setMessage(getResources().getString(R.string.invite_code_alert_text))
-                    .setNegativeButton(getResources().getString(R.string.invite_code_alert_negative_text), null)
-                    .setPositiveButton(getResources().getString(R.string.invite_code_alert_positive_text), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            InviteCodeActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                        }
-                    }).show();
-            return false;
-        }
     }
 
 }

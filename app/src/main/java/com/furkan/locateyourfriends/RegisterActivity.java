@@ -1,13 +1,8 @@
 package com.furkan.locateyourfriends;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String register_username, register_email, register_password;
     private Button btnRegister;
     private ImageView imgBack;
+    private Utility utility = new Utility();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +87,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (!checkUsername()) return;
         if (!checkEmail()) return;
         if (!checkPassword()) return;
-        if (!checkConnection()) return;
+        if (!utility.checkInternetConnection(this, getResources().getString(R.string.register_alert_text)))
+            return;
 
         layoutUsername.setErrorEnabled(false);
         layoutEmail.setErrorEnabled(false);
@@ -157,30 +153,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         } else
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
-    private boolean checkConnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeInfo != null && activeInfo.isConnected()) {
-            return true;
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-            builder.setCancelable(false);
-            builder.setIcon(R.drawable.wifi_off);
-            builder.setTitle(getResources().getString(R.string.register_alert_title));
-            builder.setMessage(getResources().getString(R.string.register_alert_text));
-            builder.setNegativeButton(getResources().getString(R.string.register_alert_negative_text), null);
-            builder.setPositiveButton(getResources().getString(R.string.register_alert_positive_text), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    RegisterActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                }
-            });
-            builder.show();
-            return false;
-        }
-
     }
 
     //Fetch username, email, password and goes to GalleryActivity.

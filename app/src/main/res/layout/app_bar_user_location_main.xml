@@ -23,12 +23,14 @@
     <include layout="@layout/content_user_location_main" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
+        android:layout_marginBottom="60dp"
+        android:backgroundTint="@color/background_red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:src="@drawable/fab"
+        android:src="@drawable/my_location"
         android:layout_marginRight="10dp"
-        android:layout_marginBottom="80dp" />
+        android:tint="@color/background_white" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

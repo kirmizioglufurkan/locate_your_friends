@@ -1,5 +1,7 @@
 package com.furkan.locateyourfriends;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,13 +10,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,8 +29,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -51,8 +45,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -81,7 +73,6 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     private FirebaseUser user;
     private DatabaseReference reference;
     private GoogleMap mMap;
-
     private GoogleApiClient client;
     private LocationRequest request;
     private String user_uid, user_code;
@@ -90,9 +81,8 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     private LatLng latLngUser;
     private LatLng mapDefault = new LatLng(41.0049823, 28.7319909);
     private NavigationView navigationView;
-    private NotificationManagerCompat notificationManagerCompat;
-
     final List<Friendship> friendshipArrayList = new ArrayList<>();
+    private Utility utility = new Utility();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,8 +97,6 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         tv_username = header.findViewById(R.id.tv_user_name);
         tv_user_email = header.findViewById(R.id.tv_user_email);
         iv_user_image = header.findViewById(R.id.iv_userimage);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow).setDrawerLayout(drawer).build();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -116,25 +104,27 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        checkInternetConnection();
-        checkGPSConnection();
-        createNotificationChannels();
-
-        notificationManagerCompat = NotificationManagerCompat.from(UserLocationMainActivity.this);
+        createNotificationChannels(UserLocationMainActivity.this);
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         user_uid = auth.getUid();
         reference = FirebaseDatabase.getInstance().getReference().child(USERS);
-        reference.child(user_uid).child(IS_SHARING).setValue(true);
-        currentUserInformation(reference);
+        getCurrentUser(reference);
+        if (!utility.checkInternetConnection(this, getResources().getString(R.string.login_alert_text)))
+            return;
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!checkGPSConnection()) return;
+                if (!utility.checkGPSConnection(UserLocationMainActivity.this)) return;
                 moveToCurrentLocation(latLngUser);
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     // ------NAVIGATION VIEW ITEMS------
@@ -159,9 +149,6 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         return true;
     }
 
-    // ------NAVIGATION VIEW ITEMS END------
-
-
     // ------MAP & LOCATION SERVICES------
 
     //Gets location.
@@ -180,13 +167,13 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         mMap.animateCamera(CameraUpdateFactory.zoomTo(7), 2000, null);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         request = new LocationRequest().create();
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         request.setInterval(3000);
         LocationServices.FusedLocationApi.requestLocationUpdates(client, request, this);
-        getFriendsList();
     }
 
     @Override
@@ -209,7 +196,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
             mMap.clear();
             markUserLocation(mMap);
             getFriendsLocations(mMap, friendshipArrayList);
-
+            getFriendsList();
         }
     }
 
@@ -236,19 +223,16 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     //Marker of user location.
     private void markUserLocation(GoogleMap maps) {
         mMap.addMarker(new MarkerOptions()
-                .icon(bitmapDescriptorFromVector(this, R.drawable.my_location))
+                .icon(utility.bitmapDescriptorFromVector(this, R.drawable.my_location))
                 .position(latLngUser)
                 .title(getResources().getString(R.string.user_location_here)));
     }
 
 
-    // ------MAP & LOCATION SERVICES END------
-
-
     // ------MENU ITEMS & ACTIONS------
 
     // Fetches information of current user.
-    private void currentUserInformation(DatabaseReference reference) {
+    private void getCurrentUser(DatabaseReference reference) {
         //Retrieving user information from database.
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -315,11 +299,11 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
 
     private void addFriendsItems(Menu menu) {
         final Menu sideMenu = menu.addSubMenu(getResources().getString(R.string.user_friends));
+        sideMenu.clear();
         if (friendshipArrayList.isEmpty()) {
             sideMenu.addSubMenu(getResources().getString(R.string.user_friends_null_error));
             return;
         }
-        sideMenu.clear();
         for (int i = 0; i < friendshipArrayList.size(); i++) {
             Query query = reference.orderByChild(CODE).equalTo(friendshipArrayList.get(i).code);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -431,91 +415,18 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         alert.show();
     }
 
-    // ------NAVIGATION VIEW - SIDE MENU ITEMS & ACTIONS END------
-
-
     // ------SERVICES RUNNING ON ACTIVITY------
 
     //Action when user pressed return button.
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(UserLocationMainActivity.this);
-        builder.setTitle(getResources().getString(R.string.user_exit_alert_title));
-        builder.setIcon(R.drawable.sign_out);
-        builder.setMessage(getResources().getString(R.string.user_exit_alert_text));
-        builder.setNegativeButton(getResources().getString(R.string.user_exit_alert_negative_text), null);
-        builder.setPositiveButton(getResources().getString(R.string.user_exit_alert_positive_text), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                reference.child(user_uid).child(IS_SHARING).setValue(false);
-                UserLocationMainActivity.this.onDestroy();
-            }
-        });
-        builder.show();
+        utility.exitAlert(this, reference, user_uid);
     }
 
-    private boolean checkGPSConnection() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-            return true;
-        else {
-            alertGPS();
-            return false;
-        }
-    }
-
-    private boolean checkInternetConnection() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnectedOrConnecting())
-            return true;
-        else {
-            alertInternet();
-            return false;
-        }
-    }
-
-    private void alertInternet() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false)
-                .setTitle(getResources().getString(R.string.invite_code_alert_title))
-                .setIcon(R.drawable.wifi_off)
-                .setMessage(getResources().getString(R.string.register_alert_text))
-                .setNegativeButton(getResources().getString(R.string.register_alert_negative_text), null)
-                .setPositiveButton(getResources().getString(R.string.register_alert_positive_text), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        UserLocationMainActivity.this.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                    }
-                })
-                .show();
-    }
-
-    private void alertGPS() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage(getResources().getString(R.string.user_location_alert_text))
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.user_location_alert_positive_text), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(callGPSSettingIntent);
-                    }
-                });
-        alertDialogBuilder.setNegativeButton(getResources().getString(R.string.user_location_alert_negative_text),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-    }
-
-    private void createNotificationChannels() {
+    public void createNotificationChannels(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel1 = new NotificationChannel(CHANNEL_1_ID, "Channel 1", NotificationManager.IMPORTANCE_HIGH);
-            channel1.enableVibration(true);
             channel1.setDescription("Users which are closer to me");
-            NotificationManager manager = getSystemService(NotificationManager.class);
+            NotificationManager manager = activity.getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel1);
         }
     }
@@ -524,7 +435,6 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         Intent phoneCall = new Intent(Intent.ACTION_CALL);
         phoneCall.setData(Uri.parse("tel:" + phoneNumber));
         PendingIntent phoneCallIntent = PendingIntent.getActivity(this, 0, phoneCall, PendingIntent.FLAG_UPDATE_CURRENT);
-
         NotificationCompat.Builder myNotification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.explore)
                 .setContentTitle(name_surname + " " + getResources().getString(R.string.user_notification_title))
@@ -538,28 +448,11 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         mNotificationManager.notify(1, myNotification.build());
     }
 
-    // ------RUNNING SERVICES ON ACTIVITY END------
-
-
-    // ------UTILITY FUNCTIONS------
-
-    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
-        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
-        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
-    // ------UTILITY FUNCTIONS END------
-
-
     // ------ SURGERY ROOM------
     private void markLocations(GoogleMap maps, User user) {
         LatLng position = new LatLng(user.lat, user.lng);
         maps.addMarker(new MarkerOptions()
-                .icon(bitmapDescriptorFromVector(UserLocationMainActivity.this, R.drawable.friends_marker))
+                .icon(utility.bitmapDescriptorFromVector(UserLocationMainActivity.this, R.drawable.friends_marker))
                 .position(position)
                 .title(user.name + " " + user.surname + " " + getResources().getString(R.string.user_location_distance) + " " + calculateDistance(position, latLngUser)));
     }
@@ -577,8 +470,9 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                             if (locationUser.isSharing) {
                                 markLocations(maps, locationUser);
                                 long distance = Math.round(SphericalUtil.computeDistanceBetween(position, latLngUser));
-                                while (distance < 100 && distance > 90)
+                                while (distance < 100 && distance > 90) {
                                     sendToChannel1(locationUser.name + " " + locationUser.surname, locationUser.phoneNumber);
+                                }
                             }
                         }
                     }
@@ -592,6 +486,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     }
 
     private void getFriendsList() {
+        friendshipArrayList.clear();
         Query query = reference.child(user_uid).child(FRIENDS);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -611,6 +506,4 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     }
 
     // ------ SURGERY ROOM ENDS------
-
-
 }
