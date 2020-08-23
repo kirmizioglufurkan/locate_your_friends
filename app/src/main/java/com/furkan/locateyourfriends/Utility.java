@@ -1,3 +1,8 @@
+/**
+ * @author Furkan Kırmızıoğlu on 2020
+ * @project Locate Your Friends
+ */
+
 package com.furkan.locateyourfriends;
 
 import android.app.Activity;
@@ -25,7 +30,7 @@ import static com.furkan.locateyourfriends.UserLocationMainActivity.IS_SHARING;
 
 public class Utility {
 
-    public boolean checkInternetConnection(Activity activity, String alertText) {
+    public static boolean checkInternetConnection(Activity activity, String alertText) {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnectedOrConnecting())
@@ -36,7 +41,7 @@ public class Utility {
         }
     }
 
-    private void internetAlert(final Activity activity, String alertText) {
+    private static void internetAlert(final Activity activity, String alertText) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(activity);
         builder.setCancelable(false);
         builder.setIcon(R.drawable.wifi_off);
@@ -81,7 +86,7 @@ public class Utility {
         alert.show();
     }
 
-    public void exitAlert(Activity activity, final DatabaseReference reference, final String user_uid) {
+    public static void exitAlert(Activity activity, final DatabaseReference reference, final String user_uid) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(activity.getResources().getString(R.string.user_exit_alert_title));
         builder.setIcon(R.drawable.sign_out);
@@ -97,7 +102,7 @@ public class Utility {
         builder.show();
     }
 
-    public BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+    public static BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);

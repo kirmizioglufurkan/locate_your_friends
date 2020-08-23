@@ -1,3 +1,7 @@
+/**
+ * @author Furkan Kırmızıoğlu on 2020
+ * @project Locate Your Friends
+ */
 package com.furkan.locateyourfriends;
 
 import android.app.ProgressDialog;
@@ -87,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (!checkUsername()) return;
         if (!checkEmail()) return;
         if (!checkPassword()) return;
-        if (!utility.checkInternetConnection(this, getResources().getString(R.string.register_alert_text)))
+        if (!Utility.checkInternetConnection(this, getResources().getString(R.string.register_alert_text)))
             return;
 
         layoutUsername.setErrorEnabled(false);

@@ -1,3 +1,8 @@
+/**
+ * @author Furkan Kırmızıoğlu on 2020
+ * @project Locate Your Friends
+ */
+
 package com.furkan.locateyourfriends;
 
 import android.app.ProgressDialog;
@@ -36,7 +41,7 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
     private ProgressDialog dialog;
     private PinView pwInviteCode;
     private Button btnInviteCode;
-    private Utility utility;
+    private Utility utility = new Utility();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +79,7 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void checkAndRegister() {
-        if (!utility.checkInternetConnection(this, getResources().getString(R.string.invite_code_alert_text)))
+        if (!Utility.checkInternetConnection(InviteCodeActivity.this, getResources().getString(R.string.invite_code_alert_text)))
             return;
         dialog.setMessage(getResources().getString(R.string.invite_code_progress));
         dialog.setCancelable(false);

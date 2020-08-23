@@ -1,3 +1,8 @@
+/**
+ * @author Furkan Kırmızıoğlu on 2020
+ * @project Locate Your Friends
+ */
+
 package com.furkan.locateyourfriends;
 
 import android.content.Intent;
@@ -28,7 +33,7 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
     private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
     private DatabaseReference reference;
-    private Friendship friendship = new Friendship();
+    private User friend = new User();
     private Utility utility = new Utility();
 
     @Override
@@ -51,7 +56,7 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.btn_add_friend: {
                 String inviteCode = pwInviteCode.getText().toString();
-                if (!utility.checkInternetConnection(this, getResources().getString(R.string.add_friend_alert_text)))
+                if (!Utility.checkInternetConnection(this, getResources().getString(R.string.add_friend_alert_text)))
                     return;
                 if (!validationCheck(inviteCode)) return;
                 setFriend(inviteCode);
@@ -70,12 +75,9 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        User user = ds.getValue(User.class);
-                        friendship.setCode(user.code);
-                        friendship.setName(user.name);
-                        friendship.setSurname(user.surname);
-                        reference.child(firebaseUser.getUid()).child("friends").push().setValue(friendship);
-                        Toast.makeText(getApplicationContext(), friendship.name + " " + friendship.surname + getResources().getString(R.string.add_friend_successful), Toast.LENGTH_SHORT).show();
+                        friend = ds.getValue(User.class);
+                        reference.child(firebaseUser.getUid()).child("friends").push().setValue(friend);
+                        Toast.makeText(getApplicationContext(), friend.name + " " + friend.surname + getResources().getString(R.string.add_friend_successful), Toast.LENGTH_SHORT).show();
                     }
                 } else
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.add_friend_failed), Toast.LENGTH_SHORT).show();

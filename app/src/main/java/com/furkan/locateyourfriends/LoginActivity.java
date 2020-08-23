@@ -1,3 +1,7 @@
+/**
+ * @author Furkan Kırmızıoğlu on 2020
+ * @project Locate Your Friends
+ */
 package com.furkan.locateyourfriends;
 
 import android.content.Intent;
@@ -85,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void login() {
         if (!checkEmail()) return;
         if (!checkPassword()) return;
-        if (!utility.checkInternetConnection(this, getResources().getString(R.string.login_alert_text)))
+        if (!Utility.checkInternetConnection(this, getResources().getString(R.string.login_alert_text)))
             return;
         pbLogin.setVisibility(View.VISIBLE);
         user_email = etEmail.getText().toString().trim();
@@ -95,8 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     pbLogin.setVisibility(View.VISIBLE);
-                    Intent intent = new Intent(LoginActivity.this, UserLocationMainActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(LoginActivity.this, UserLocationMainActivity.class));
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_wrong_info), Toast.LENGTH_SHORT).show();

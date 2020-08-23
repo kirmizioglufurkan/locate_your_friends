@@ -1,3 +1,7 @@
+/**
+ * @author Furkan Kırmızıoğlu on 2020
+ * @project Locate Your Friends
+ */
 package com.furkan.locateyourfriends;
 
 import android.content.Intent;
