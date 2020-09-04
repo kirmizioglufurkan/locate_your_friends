@@ -28,11 +28,20 @@ import com.google.firebase.auth.SignInMethodQueryResult;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextInputLayout layoutUsername, layoutEmail, layoutPassword, layoutPasswordConfirm;
-    private EditText etUsername, etEmail, etPassword, etPasswordConfirm;
+    private TextInputLayout layoutUsername;
+    private TextInputLayout layoutEmail;
+    private TextInputLayout layoutPassword;
+    private TextInputLayout layoutPasswordConfirm;
+    private EditText etUsername;
+    private EditText etEmail;
+    private EditText etPassword;
+    private EditText etPasswordConfirm;
+
     private FirebaseAuth auth;
     private ProgressDialog dialog;
-    private String register_username, register_email, register_password;
+    private String register_username;
+    private String register_email;
+    private String register_password;
     private Button btnRegister;
     private ImageView imgBack;
     private Utility utility = new Utility();
@@ -91,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (!checkUsername()) return;
         if (!checkEmail()) return;
         if (!checkPassword()) return;
-        if (!Utility.checkInternetConnection(this, getResources().getString(R.string.register_alert_text)))
+        if (!utility.checkInternetConnection(this, getResources().getString(R.string.register_alert_text)))
             return;
 
         layoutUsername.setErrorEnabled(false);

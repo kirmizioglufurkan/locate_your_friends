@@ -33,9 +33,20 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String username, email, password, name, surname, phoneNumber, date, code;
-    private TextInputLayout nameLayout, surnameLayout, phoneNumberLayout;
-    private EditText etName, etSurname;
+    private String username;
+    private String email;
+    private String password;
+    private String name;
+    private String surname;
+    private String phoneNumber;
+    private String code;
+
+    private TextInputLayout nameLayout;
+    private TextInputLayout surnameLayout;
+    private TextInputLayout phoneNumberLayout;
+
+    private EditText etName;
+    private EditText etSurname;
     private MaskEditText maskPhoneNumber;
     private CircleImageView circleImageView;
     private Uri resultUri;
@@ -97,7 +108,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         intent.putExtra("name", name);
         intent.putExtra("surname", surname);
         intent.putExtra("phoneNumber", phoneNumber);
-        intent.putExtra("date", date);
         intent.putExtra("isSharing", "false");
         intent.putExtra("code", code);
         intent.putExtra("imageUri", resultUri);

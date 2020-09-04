@@ -36,6 +36,7 @@ public class Utility {
     public static final String LAT = "lat";
     public static final String LNG = "lng";
     public static final String FRIENDS = "friends";
+    public static final String IMAGE_URL = "imageUrl";
 
 
     public boolean checkInternetConnection(Activity activity, String alertText) {

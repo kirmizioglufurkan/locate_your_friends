@@ -30,9 +30,21 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import static com.furkan.locateyourfriends.Utility.CODE;
+import static com.furkan.locateyourfriends.Utility.IMAGE_URL;
+
 public class InviteCodeActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private String username, email, password, name, surname, phoneNumber, date, code, userId;
+    private String username;
+    private String email;
+    private String password;
+    private String name;
+    private String surname;
+    private String phoneNumber;
+    private String date;
+    private String code;
+    private String userId;
+
     private Uri imageUri;
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -41,7 +53,7 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
     private ProgressDialog dialog;
     private PinView pwInviteCode;
     private Button btnInviteCode;
-    private Utility utility = new Utility();
+    private Utility utility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +79,8 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
             imageUri = intent.getParcelableExtra("imageUri");
             pwInviteCode.setText(code);
         }
+
+        utility = new Utility();
     }
 
     @Override
@@ -79,7 +93,7 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void checkAndRegister() {
-        if (!Utility.checkInternetConnection(InviteCodeActivity.this, getResources().getString(R.string.invite_code_alert_text)))
+        if (!utility.checkInternetConnection(InviteCodeActivity.this, getResources().getString(R.string.invite_code_alert_text)))
             return;
         dialog.setMessage(getResources().getString(R.string.invite_code_progress));
         dialog.setCancelable(false);
@@ -107,23 +121,23 @@ public class InviteCodeActivity extends AppCompatActivity implements View.OnClic
                                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> taskSnapshot) {
                                         if (taskSnapshot.isSuccessful()) {
                                             String image_download_path = taskSnapshot.getResult().getMetadata().getReference().getDownloadUrl().toString();
-                                            reference.child(user.getUid()).child("imageUrl").setValue(image_download_path).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            reference.child(user.getUid()).child(IMAGE_URL).setValue(image_download_path).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
                                                         storageReference.child(user.getUid() + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                                             @Override
                                                             public void onSuccess(Uri uri) {
-                                                                reference.child(user.getUid()).child("imageUrl").setValue(uri.toString());
+                                                                reference.child(user.getUid()).child(IMAGE_URL).setValue(uri.toString());
                                                             }
                                                         }).addOnFailureListener(new OnFailureListener() {
                                                             @Override
                                                             public void onFailure(@NonNull Exception e) {
-                                                                reference.child(user.getUid()).child("imageUrl").setValue("Hatalı url");
+                                                                reference.child(user.getUid()).child(IMAGE_URL).setValue(IMAGE_URL);
                                                             }
                                                         });
                                                         dialog.dismiss();
-                                                        reference.child(user.getUid()).child("code").setValue(code);
+                                                        reference.child(user.getUid()).child(CODE).setValue(code);
                                                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.invite_code_successful), Toast.LENGTH_SHORT).show();
                                                         Intent intent = new Intent(InviteCodeActivity.this, LoginActivity.class);
                                                         intent.putExtra("email", email);
