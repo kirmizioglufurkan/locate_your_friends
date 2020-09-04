@@ -26,11 +26,19 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.database.DatabaseReference;
 
 import static android.content.Context.LOCATION_SERVICE;
-import static com.furkan.locateyourfriends.UserLocationMainActivity.IS_SHARING;
 
 public class Utility {
 
-    public static boolean checkInternetConnection(Activity activity, String alertText) {
+    public static final String CHANNEL_1_ID = "channel1";
+    public static final String USERS = "Users";
+    public static final String CODE = "code";
+    public static final String IS_SHARING = "isSharing";
+    public static final String LAT = "lat";
+    public static final String LNG = "lng";
+    public static final String FRIENDS = "friends";
+
+
+    public boolean checkInternetConnection(Activity activity, String alertText) {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnectedOrConnecting())
@@ -41,7 +49,7 @@ public class Utility {
         }
     }
 
-    private static void internetAlert(final Activity activity, String alertText) {
+    private void internetAlert(final Activity activity, String alertText) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(activity);
         builder.setCancelable(false);
         builder.setIcon(R.drawable.wifi_off);
@@ -86,7 +94,7 @@ public class Utility {
         alert.show();
     }
 
-    public static void exitAlert(Activity activity, final DatabaseReference reference, final String user_uid) {
+    public void exitAlert(Activity activity, final DatabaseReference reference, final String user_uid) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(activity.getResources().getString(R.string.user_exit_alert_title));
         builder.setIcon(R.drawable.sign_out);
@@ -102,7 +110,7 @@ public class Utility {
         builder.show();
     }
 
-    public static BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+    public BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
         Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
         vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);

@@ -7,10 +7,17 @@ package com.furkan.locateyourfriends;
 
 public class User {
 
-    public String username, email, password, imageUrl, name, surname, phoneNumber, code;
-    public boolean isSharing;
-    public double lat;
-    public double lng;
+    private String username;
+    private String email;
+    private String password;
+    private String imageUrl;
+    private String name;
+    private String surname;
+    private String phoneNumber;
+    private String code;
+    private boolean isSharing;
+    private double lat;
+    private double lng;
 
     public User() {
     }
@@ -25,7 +32,7 @@ public class User {
         this.code = code;
         this.isSharing = isSharing;
         this.lat = lat;
-        this.lng = lat;
+        this.lng = lng;
         this.imageUrl = imageUrl;
     }
 
@@ -116,4 +123,5 @@ public class User {
     public void setLng(double lng) {
         this.lng = lng;
     }
+
 }

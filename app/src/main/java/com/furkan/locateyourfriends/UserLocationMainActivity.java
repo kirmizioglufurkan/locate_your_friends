@@ -68,26 +68,39 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.furkan.locateyourfriends.Utility.CHANNEL_1_ID;
+import static com.furkan.locateyourfriends.Utility.CODE;
+import static com.furkan.locateyourfriends.Utility.FRIENDS;
+import static com.furkan.locateyourfriends.Utility.IS_SHARING;
+import static com.furkan.locateyourfriends.Utility.LAT;
+import static com.furkan.locateyourfriends.Utility.LNG;
+import static com.furkan.locateyourfriends.Utility.USERS;
+
 public class UserLocationMainActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener, LocationListener {
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    public static final String CHANNEL_1_ID = "channel1", USERS = "Users", CODE = "code", IS_SHARING = "isSharing", LAT = "lat", LNG = "lng", FRIENDS = "friends";
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int DEFAULT_ZOOM = 15;
-    final List<User> userArrayList = new ArrayList<>();
+
+    private final List<Friendship> friendshipArrayList = new ArrayList<>();
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private GoogleMap mMap;
     private DatabaseReference databaseReference;
     private LatLng latLngDefault = new LatLng(41.0049823, 28.7319909);
     private boolean locationPermissionGranted = true;
+    private FusedLocationProviderClient fusedLocationProviderClient;
     private Location lastKnownLocation;
 
-    private TextView tv_username, tv_user_email;
+    private User loggedUser;
+
+    private TextView tv_username;
+    private TextView tv_user_email;
     private ImageView iv_user_image;
     private NavigationView navigationView;
-    private FusedLocationProviderClient fusedLocationProviderClient;
+
+    private Utility utility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,12 +127,14 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         firebaseUser = firebaseAuth.getCurrentUser();
         databaseReference = FirebaseDatabase.getInstance().getReference().child(USERS);
         getCurrentUser(databaseReference);
-        if (!Utility.checkInternetConnection(this, getResources().getString(R.string.login_alert_text)))
+        if (!utility.checkInternetConnection(this, getResources().getString(R.string.login_alert_text)))
             return;
 
         // Construct a FusedLocationProviderClient.
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        loggedUser = new User();
+        utility = new Utility();
         setMenuItems();
     }
 
@@ -158,6 +173,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         updateLocationUI();
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+
     }
 
     private void getLocationPermission() {
@@ -177,24 +193,6 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
 
-    }
-
-    private void updateLocationUI() {
-        if (mMap == null) {
-            return;
-        }
-        try {
-            if (locationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                lastKnownLocation = null;
-                getLocationPermission();
-            }
-        } catch (SecurityException e) {
-        }
     }
 
     private void getDeviceLocation() {
@@ -229,13 +227,33 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         }
     }
 
+    private void updateLocationUI() {
+        if (mMap == null) {
+            return;
+        }
+        try {
+            if (locationPermissionGranted) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            } else {
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                lastKnownLocation = null;
+                getLocationPermission();
+            }
+        } catch (SecurityException e) {
+        }
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         if (lastKnownLocation == null) {
             Toast.makeText(getApplicationContext(), R.string.user_location_error, Toast.LENGTH_LONG).show();
         } else {
-            databaseReference.child(firebaseUser.getUid()).child(LAT).setValue(lastKnownLocation.getLatitude());
-            databaseReference.child(firebaseUser.getUid()).child(LNG).setValue(lastKnownLocation.getLongitude());
+            loggedUser.setLat(lastKnownLocation.getLatitude());
+            loggedUser.setLng(lastKnownLocation.getLongitude());
+            databaseReference.child(firebaseUser.getUid()).child(LAT).setValue(loggedUser.getLat());
+            databaseReference.child(firebaseUser.getUid()).child(LNG).setValue(loggedUser.getLng());
             getFriendLocation();
         }
     }
@@ -259,10 +277,10 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    User user = dataSnapshot.child(firebaseUser.getUid()).getValue(User.class);
-                    tv_username.setText(user.name + " " + user.surname);
-                    tv_user_email.setText(user.email);
-                    Picasso.get().load(user.imageUrl).into(iv_user_image);
+                    loggedUser = dataSnapshot.child(firebaseUser.getUid()).getValue(User.class);
+                    tv_username.setText(loggedUser.getName() + " " + loggedUser.getSurname());
+                    tv_user_email.setText(loggedUser.getEmail());
+                    Picasso.get().load(loggedUser.getImageUrl()).into(iv_user_image);
                 } else {
                     tv_username.setText(getResources().getString(R.string.error));
                     tv_user_email.setText(getResources().getString(R.string.error));
@@ -281,6 +299,9 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         Menu menu = navigationView.getMenu();
         menu.clear();
         addMyItems(menu);
+
+        final SubMenu sideMenu = menu.addSubMenu(getResources().getString(R.string.user_friends));
+        addFriendsItems(sideMenu);
     }
 
     private void addMyItems(Menu menu) {
@@ -317,26 +338,70 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         });
     }
 
-    // Copies UserUID to clipboard.
-    public void getMyInviteCode() {
+    private void addFriendsItems(final SubMenu sideMenu) {
+        if (friendshipArrayList.isEmpty()) {
+            sideMenu.addSubMenu(getResources().getString(R.string.user_friends_null_error));
+            return;
+        }
+        sideMenu.clear();
+        for (int i = 0; i < friendshipArrayList.size(); i++) {
+            Query query = databaseReference.orderByChild(CODE).equalTo(friendshipArrayList.get(i).getCode());
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            final User itemUser = ds.getValue(User.class);
+                            sideMenu.add(itemUser.getName() + " " + itemUser.getSurname())
+                                    .setIcon(R.drawable.explore)
+                                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                        @Override
+                                        public boolean onMenuItemClick(MenuItem item) {
+                                            if (itemUser.isSharing()) {
+                                                LatLng location = new LatLng(itemUser.getLat(), itemUser.getLng());
+                                                moveToCurrentLocation(location);
+                                                onNavigationItemSelected(item);
+                                            } else
+                                                Toast.makeText(getApplicationContext(), itemUser.getName() + " " + itemUser.getSurname() + " " + getResources().getString(R.string.user_friend_location_null_error), Toast.LENGTH_SHORT).show();
+                                            return true;
+                                        }
+                                    });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    // Brings user closer to chosen location.
+    private void moveToCurrentLocation(LatLng currentLocation) {
         DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.closeDrawers();
-        databaseReference.child(firebaseUser.getUid()).child(CODE).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String userCode = dataSnapshot.getValue(String.class);
-                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Invite Code", getResources().getString(R.string.user_invite_code_prefix) + " " + userCode);
-                    clipboard.setPrimaryClip(clip);
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_invite_code_copied), Toast.LENGTH_SHORT).show();
-                }
-            }
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+        // Zoom in, animating the camera.
+        mMap.animateCamera(CameraUpdateFactory.zoomIn());
+        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
+    // Copies UserUID to clipboard.
+    public void getMyInviteCode() {
+        try {
+            DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
+            mDrawerLayout.closeDrawers();
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Invite Code", getResources().getString(R.string.user_invite_code_prefix) + " " + loggedUser.getCode());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_invite_code_copied), Toast.LENGTH_SHORT).show();
+        } catch (NullPointerException exception) {
+            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     // Shares instant location on WhatsApp.
@@ -345,8 +410,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         mDrawerLayout.closeDrawers();
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        LatLng latLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.user_gps_whatsApp_text) + latLng.latitude + "," + latLng.longitude + ",17z");
+        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.user_gps_whatsApp_text) + loggedUser.getLat() + "," + loggedUser.getLng() + ",17z");
         intent.setPackage("com.whatsapp");
         startActivity(intent);
     }
@@ -381,14 +445,14 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         databaseReference.child(firebaseUser.getUid()).child(IS_SHARING).setValue(false);
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_sharing_disabled), Toast.LENGTH_SHORT);
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_sharing_disabled), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNeutralButton(getResources().getString(R.string.user_sharing_nothing), null)
                 .setPositiveButton(getResources().getString(R.string.user_sharing_enable), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         databaseReference.child(firebaseUser.getUid()).child(IS_SHARING).setValue(true);
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_sharing_enabled), Toast.LENGTH_SHORT);
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_sharing_enabled), Toast.LENGTH_SHORT).show();
                     }
                 });
         AlertDialog alert = alertDialogBuilder.create();
@@ -396,11 +460,11 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     }
 
 
-    // ------SERVICES RUNNING ON ACTIVITY------
+    // ------RUNNING SERVICES ON ACTIVITY------
 
     //Action when user pressed return button.
     public void onBackPressed() {
-        Utility.exitAlert(this, databaseReference, firebaseUser.getUid());
+        utility.exitAlert(this, databaseReference, firebaseUser.getUid());
     }
 
     public void createNotificationChannels(Activity activity) {
@@ -431,30 +495,23 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
 
 
     // ------ SURGERY ROOM------
-    private void markLocation(User user) {
-        LatLng position = new LatLng(user.lat, user.lng);
-        mMap.addMarker(new MarkerOptions()
-                .icon(Utility.bitmapDescriptorFromVector(UserLocationMainActivity.this, R.drawable.friends_marker))
-                .position(position)
-                .title(user.name + " " + user.surname + " " + getResources().getString(R.string.user_location_distance) + " " + calculateDistance(position, new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))));
-    }
 
     private void getFriendLocation() {
         getFriendList();
-        for (int i = 0; i < userArrayList.size(); i++) {
-            Query query = databaseReference.orderByChild(CODE).equalTo(userArrayList.get(i).code);
+        for (int i = 0; i < friendshipArrayList.size(); i++) {
+            Query query = databaseReference.orderByChild(CODE).equalTo(friendshipArrayList.get(i).getCode());
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             User friend = ds.getValue(User.class);
-                            LatLng position = new LatLng(friend.lat, friend.lng);
-                            if (friend.isSharing) {
+                            LatLng position = new LatLng(friend.getLat(), friend.getLng());
+                            if (friend.isSharing()) {
                                 markLocation(friend);
                                 long distance = Math.round(SphericalUtil.computeDistanceBetween(position, new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude())));
                                 while (distance < 100 && distance > 90) {
-                                    sendChannelOne(friend.name + " " + friend.surname, friend.phoneNumber);
+                                    sendChannelOne(friend.getName() + " " + friend.getSurname(), friend.getPhoneNumber());
                                 }
                             }
                         }
@@ -468,16 +525,26 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         }
     }
 
+    private void markLocation(User user) {
+        LatLng position = new LatLng(user.getLat(), user.getLng());
+        mMap.addMarker(new MarkerOptions()
+                .icon(utility.bitmapDescriptorFromVector(UserLocationMainActivity.this, R.drawable.friends_marker))
+                .position(position)
+                .title(String.format(user.getName() + " " + user.getSurname() + " " +
+                        getResources().getString(R.string.user_location_distance) + " " +
+                        calculateDistance(position, new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude())))));
+    }
+
     private void getFriendList() {
-        userArrayList.clear();
+        friendshipArrayList.clear();
         Query query = databaseReference.child(firebaseUser.getUid()).child(FRIENDS);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        User friend = ds.getValue(User.class);
-                        userArrayList.add(friend);
+                        Friendship friend = ds.getValue(Friendship.class);
+                        friendshipArrayList.add(friend);
                     }
                 }
             }
@@ -487,16 +554,5 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
             }
         });
     }
-
-    /*// Brings user closer to chosen location.
-    private void moveToCurrentLocation(LatLng currentLocation) {
-        DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawers();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
-        // Zoom in, animating the camera.
-        mMap.animateCamera(CameraUpdateFactory.zoomIn());
-        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
-    }*/
 
 }

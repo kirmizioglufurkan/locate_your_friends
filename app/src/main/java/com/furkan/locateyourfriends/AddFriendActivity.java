@@ -56,7 +56,7 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.btn_add_friend: {
                 String inviteCode = pwInviteCode.getText().toString();
-                if (!Utility.checkInternetConnection(this, getResources().getString(R.string.add_friend_alert_text)))
+                if (utility.checkInternetConnection(this, getResources().getString(R.string.add_friend_alert_text)))
                     return;
                 if (!validationCheck(inviteCode)) return;
                 setFriend(inviteCode);
@@ -77,7 +77,7 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         friend = ds.getValue(User.class);
                         reference.child(firebaseUser.getUid()).child("friends").push().setValue(friend);
-                        Toast.makeText(getApplicationContext(), friend.name + " " + friend.surname + getResources().getString(R.string.add_friend_successful), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), friend.getName() + " " + friend.getSurname() + getResources().getString(R.string.add_friend_successful), Toast.LENGTH_SHORT).show();
                     }
                 } else
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.add_friend_failed), Toast.LENGTH_SHORT).show();
