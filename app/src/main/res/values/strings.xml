@@ -138,6 +138,9 @@
     <!--User Location Main Activity End-->
 
     <!--Add Friend Activity-->
+    <string name="add_friend_alert_title">Bağlantı Hatası</string>
+    <string name="add_friend_alert_positive_text">Bağlantı Ayarlarına Git</string>
+    <string name="add_friend_alert_negative_text">Anladım</string>
     <string name="add_friend_text">Arkadaşınızı Ekleyin</string>
     <string name="add_friend_sub_text">Lütfen arkadaşınızın davet kodunu aşağıdaki alana giriniz.</string>
     <string name="add_friend_button_text">Ekle</string>

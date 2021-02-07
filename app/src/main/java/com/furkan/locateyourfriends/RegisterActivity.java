@@ -28,46 +28,32 @@ import com.google.firebase.auth.SignInMethodQueryResult;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextInputLayout layoutUsername;
-    private TextInputLayout layoutEmail;
-    private TextInputLayout layoutPassword;
-    private TextInputLayout layoutPasswordConfirm;
-    private EditText etUsername;
-    private EditText etEmail;
-    private EditText etPassword;
-    private EditText etPasswordConfirm;
+    private final TextInputLayout layoutUsername = findViewById(R.id.til_register_name);
+    private final TextInputLayout layoutEmail = findViewById(R.id.til_register_email);
+    private final TextInputLayout layoutPassword = findViewById(R.id.til_register_password);
+    private final TextInputLayout layoutPasswordConfirm = findViewById(R.id.til_register_password_confirm);
+    private final EditText etUsername = findViewById(R.id.et_register_username);
+    private final EditText etEmail = findViewById(R.id.et_register_email);
+    private final EditText etPassword = findViewById(R.id.et_register_password);
+    private final EditText etPasswordConfirm = findViewById(R.id.et_register_password_confirm);
 
     private FirebaseAuth auth;
     private ProgressDialog dialog;
     private String register_username;
     private String register_email;
     private String register_password;
-    private Button btnRegister;
-    private ImageView imgBack;
-    private Utility utility = new Utility();
+    private final Button btnRegister = findViewById(R.id.btn_register);
+    private final ImageView imgBack = findViewById(R.id.img_register_back);
+    private final Utility utility = new Utility();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-        layoutUsername = findViewById(R.id.til_register_name);
-        layoutEmail = findViewById(R.id.til_register_email);
-        layoutPassword = findViewById(R.id.til_register_password);
-        layoutPasswordConfirm = findViewById(R.id.til_register_password_confirm);
-        etUsername = findViewById(R.id.et_register_username);
-        etEmail = findViewById(R.id.et_register_email);
-        etPassword = findViewById(R.id.et_register_password);
-        etPasswordConfirm = findViewById(R.id.et_register_password_confirm);
-
-        btnRegister = findViewById(R.id.btn_register);
-        imgBack = findViewById(R.id.img_register_back);
         btnRegister.setOnClickListener(this);
         imgBack.setOnClickListener(this);
-
         auth = FirebaseAuth.getInstance();
         dialog = new ProgressDialog(this);
-
         Intent intent = getIntent();
         if (intent != null) {
             etUsername.setText(intent.getStringExtra("username"));
