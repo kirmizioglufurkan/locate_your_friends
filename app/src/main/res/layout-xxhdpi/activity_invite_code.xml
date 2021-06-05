@@ -18,7 +18,7 @@
         android:fontFamily="@font/bold"
         android:text="@string/invite_code_text"
         android:textColor="@color/background_gray"
-        android:textSize="30sp"
+        android:textSize="40sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,7 +33,7 @@
         android:fontFamily="@font/light"
         android:text="@string/invite_code_sub_text"
         android:textColor="@color/background_gray"
-        android:textSize="15sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/welcome"
         app:layout_constraintStart_toStartOf="@+id/welcome"
         app:layout_constraintTop_toBottomOf="@+id/welcome" />
@@ -41,7 +41,7 @@
     <com.chaos.view.PinView
         android:id="@+id/pw_invite_code"
         style="@style/PinWidget.PinView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:clickable="false"
@@ -56,12 +56,12 @@
         app:cursorWidth="5dp"
         app:hideLineWhenFilled="true"
         app:itemCount="6"
-        app:itemHeight="40dp"
-        app:itemRadius="20dp"
+        app:itemHeight="50dp"
+        app:itemRadius="6dp"
         app:itemSpacing="13dp"
-        app:itemWidth="40dp"
+        app:itemWidth="50dp"
         app:layout_constraintEnd_toEndOf="@+id/profile_sub_text"
-        app:layout_constraintHorizontal_bias="0.538"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/profile_sub_text"
         app:layout_constraintTop_toBottomOf="@+id/profile_sub_text"
         app:lineColor="@color/background_gray"

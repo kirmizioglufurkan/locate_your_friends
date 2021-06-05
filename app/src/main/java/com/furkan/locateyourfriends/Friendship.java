@@ -2,7 +2,9 @@ package com.furkan.locateyourfriends;
 
 public class Friendship {
 
-    String code, name, surname;
+    private String code;
+    private String name;
+    private String surname;
 
     public Friendship() {
     }

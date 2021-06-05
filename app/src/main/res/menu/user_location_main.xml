@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_sharing_enable"
-        android:onClick="sharing_settings"
+        android:onClick="sharingSettings"
         android:orderInCategory="100"
         android:title="@string/user_sharing_settings_title"
         app:showAsAction="never" />

@@ -12,3 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+/assets/app_logo_login.png
+/.idea/fileTemplates/includes/File Header.java
+/app/src/main/res/drawable/friend.xml
+/assets/LocateYourFriends.xd

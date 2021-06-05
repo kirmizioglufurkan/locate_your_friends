@@ -13,8 +13,8 @@
 
     <ImageView
         android:id="@+id/img_profile_back"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
         android:fontFamily="@font/bold"
         android:text="@string/gallery_profile_text"
         android:textColor="@color/background_gray"
-        android:textSize="30sp"
+        android:textSize="40sp"
         app:layout_constraintStart_toStartOf="@+id/img_profile_back"
         app:layout_constraintTop_toBottomOf="@+id/img_profile_back" />
 
@@ -42,7 +42,7 @@
         android:fontFamily="@font/light"
         android:text="@string/gallery_image_text"
         android:textColor="@color/background_gray"
-        android:textSize="15sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/tv_profile_main_text"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/tv_profile_main_text"
