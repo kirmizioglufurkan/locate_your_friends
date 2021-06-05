@@ -1,7 +1,6 @@
-/**
- * @author Furkan Kırmızıoğlu on 2020
- * @project Locate Your Friends
- */
+/*
+    @author Furkan Kırmızıoğlu
+*/
 
 package com.furkan.locateyourfriends;
 
@@ -12,7 +11,6 @@ import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -51,7 +49,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -100,7 +97,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     private ImageView iv_user_image;
     private NavigationView navigationView;
 
-    private Utility utility = new Utility();
+    private final Utility utility = new Utility();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +131,6 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         loggedUser = new User();
-        utility = new Utility();
         setMenuItems();
     }
 
@@ -204,22 +200,19 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         try {
             if (locationPermissionGranted) {
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            lastKnownLocation = task.getResult();
-                            if (lastKnownLocation != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(lastKnownLocation.getLatitude(),
-                                                lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                            }
-                        } else {
-                            mMap.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(latLngDefault, 7));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                locationResult.addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Set the map's camera position to the current location of the device.
+                        lastKnownLocation = task.getResult();
+                        if (lastKnownLocation != null) {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(lastKnownLocation.getLatitude(),
+                                            lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                         }
+                    } else {
+                        mMap.moveCamera(CameraUpdateFactory
+                                .newLatLngZoom(latLngDefault, 7));
+                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
                     }
                 });
             }
@@ -342,17 +335,14 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
                             final User itemUser = ds.getValue(User.class);
                             sideMenu.add(itemUser.getName() + " " + itemUser.getSurname())
                                     .setIcon(R.drawable.explore)
-                                    .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                                        @Override
-                                        public boolean onMenuItemClick(MenuItem item) {
-                                            if (itemUser.isSharing()) {
-                                                LatLng location = new LatLng(itemUser.getLat(), itemUser.getLng());
-                                                moveToCurrentLocation(location);
-                                                onNavigationItemSelected(item);
-                                            } else
-                                                Toast.makeText(getApplicationContext(), itemUser.getName() + " " + itemUser.getSurname() + " " + getResources().getString(R.string.user_friend_location_null_error), Toast.LENGTH_SHORT).show();
-                                            return true;
-                                        }
+                                    .setOnMenuItemClickListener(item -> {
+                                        if (itemUser.isSharing()) {
+                                            LatLng location = new LatLng(itemUser.getLat(), itemUser.getLng());
+                                            moveToCurrentLocation(location);
+                                            onNavigationItemSelected(item);
+                                        } else
+                                            Toast.makeText(getApplicationContext(), itemUser.getName() + " " + itemUser.getSurname() + " " + getResources().getString(R.string.user_friend_location_null_error), Toast.LENGTH_SHORT).show();
+                                        return true;
                                     });
                         }
                     }
@@ -429,19 +419,14 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage(getResources().getString(R.string.user_sharing_settings_alert_title))
                 .setCancelable(false)
-                .setNegativeButton(getResources().getString(R.string.user_sharing_disable), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        databaseReference.child(firebaseUser.getUid()).child(IS_SHARING).setValue(false);
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_sharing_disabled), Toast.LENGTH_SHORT).show();
-                    }
+                .setNegativeButton(getResources().getString(R.string.user_sharing_disable), (dialog, which) -> {
+                    databaseReference.child(firebaseUser.getUid()).child(IS_SHARING).setValue(false);
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_sharing_disabled), Toast.LENGTH_SHORT).show();
                 })
                 .setNeutralButton(getResources().getString(R.string.user_sharing_nothing), null)
-                .setPositiveButton(getResources().getString(R.string.user_sharing_enable), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        databaseReference.child(firebaseUser.getUid()).child(IS_SHARING).setValue(true);
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_sharing_enabled), Toast.LENGTH_SHORT).show();
-                    }
+                .setPositiveButton(getResources().getString(R.string.user_sharing_enable), (dialog, id) -> {
+                    databaseReference.child(firebaseUser.getUid()).child(IS_SHARING).setValue(true);
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.user_sharing_enabled), Toast.LENGTH_SHORT).show();
                 });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
@@ -518,9 +503,9 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         mMap.addMarker(new MarkerOptions()
                 .icon(utility.bitmapDescriptorFromVector(UserLocationMainActivity.this, R.drawable.friends_marker))
                 .position(position)
-                .title(String.format(user.getName() + " " + user.getSurname() + " " +
+                .title(user.getName() + " " + user.getSurname() + " " +
                         getResources().getString(R.string.user_location_distance) + " " +
-                        calculateDistance(position, new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude())))));
+                        calculateDistance(position, new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))));
     }
 
     private void getFriendList() {

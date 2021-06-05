@@ -1,12 +1,10 @@
-/**
- * @author Furkan Kırmızıoğlu on 2020
- * @project Locate Your Friends
- */
+/*
+    @author Furkan Kırmızıoğlu
+*/
 package com.furkan.locateyourfriends;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -18,16 +16,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.Objects;
+
+public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private Button btnLogin;
@@ -38,8 +34,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextInputLayout passwordLayout;
     private EditText etEmail;
     private EditText etPassword;
-    private String user_email;
-    private String user_password;
     private Utility utility;
 
     @Override
@@ -54,96 +48,67 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         passwordLayout = findViewById(R.id.til_login_password);
         etEmail = findViewById(R.id.et_login_email);
         etPassword = findViewById(R.id.et_login_password);
-        btnLogin.setOnClickListener(LoginActivity.this);
-        goToRegister.setOnClickListener(LoginActivity.this);
-        imgBack.setOnClickListener(LoginActivity.this);
         pbLogin.setVisibility(View.INVISIBLE);
         auth = FirebaseAuth.getInstance();
         Intent intent = getIntent();
         if (intent != null)
-            emailLayout.getEditText().setText(intent.getStringExtra("email"));
+            Objects.requireNonNull(emailLayout.getEditText()).setText(intent.getStringExtra("email"));
         utility = new Utility();
     }
 
-
-    // Actions for every possible click.
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_login: {
-                login();
-            }
-            break;
-            case R.id.tv_login_goToRegister: {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                finish();
-            }
-            break;
-            case R.id.img_login_back: {
-                Animation animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
-                imgBack.startAnimation(animation);
-                startActivity(new Intent(LoginActivity.this, WelcomeActivity.class));
-                finish();
-            }
-            break;
-        }
+    protected void onResume() {
+        super.onResume();
+        btnLogin.setOnClickListener(v -> login());
+
+        goToRegister.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            finish();
+        });
+
+        imgBack.setOnClickListener(v -> {
+            Animation animation = AnimationUtils.loadAnimation(LoginActivity.this, R.anim.bounce);
+            imgBack.startAnimation(animation);
+            startActivity(new Intent(LoginActivity.this, WelcomeActivity.class));
+            finish();
+        });
+
     }
 
-    //Authorizes to Firebase.
+    //Authorizing to Firebase.
     private void login() {
-        if (!checkEmail()) return;
-        if (!checkPassword()) return;
+        String email = Objects.requireNonNull(emailLayout.getEditText()).getText().toString().trim();
+        String password = Objects.requireNonNull(passwordLayout.getEditText()).getText().toString().trim();
+
+        if (!utility.emailNullCheck(email)) {
+            emailLayout.setError(getResources().getString(R.string.register_email_null_error));
+            utility.requestFocus(etEmail, LoginActivity.this);
+            return;
+        }
+        if (!utility.emailFormatCheck(email)) {
+            emailLayout.setError(getResources().getString(R.string.register_email_wrong_error));
+            utility.requestFocus(etEmail, LoginActivity.this);
+            return;
+        }
+        if (!utility.passwordNullCheck(password)) {
+            passwordLayout.setError(getResources().getString(R.string.login_password_null_error));
+            utility.requestFocus(etPassword, LoginActivity.this);
+            return;
+        }
         if (!utility.checkInternetConnection(this, getResources().getString(R.string.login_alert_text)))
             return;
+
         pbLogin.setVisibility(View.VISIBLE);
-        user_email = etEmail.getText().toString().trim();
-        user_password = etPassword.getText().toString().trim();
-        auth.signInWithEmailAndPassword(user_email, user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    pbLogin.setVisibility(View.VISIBLE);
-                    startActivity(new Intent(LoginActivity.this, UserLocationMainActivity.class));
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_wrong_info), Toast.LENGTH_SHORT).show();
-                    pbLogin.setVisibility(View.INVISIBLE);
-                }
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                pbLogin.setVisibility(View.VISIBLE);
+                startActivity(new Intent(LoginActivity.this, UserLocationMainActivity.class));
+                finish();
+            } else {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.login_wrong_info), Toast.LENGTH_SHORT).show();
+                pbLogin.setVisibility(View.INVISIBLE);
             }
         });
     }
-
-    private boolean checkEmail() {
-        String emailUser = emailLayout.getEditText().getText().toString().trim();
-        if (emailUser.isEmpty()) {
-            emailLayout.setError(getResources().getString(R.string.register_email_null_error));
-            requestFocus(etEmail);
-            return false;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(emailUser).matches()) {
-            emailLayout.setError(getResources().getString(R.string.register_email_wrong_error));
-            requestFocus(etEmail);
-            return false;
-        }
-        emailLayout.setErrorEnabled(false);
-        return true;
-    }
-
-    private boolean checkPassword() {
-        if (etPassword.getText().toString().trim().isEmpty()) {
-            passwordLayout.setError(getResources().getString(R.string.login_password_null_error));
-            requestFocus(etPassword);
-            return false;
-        }
-        passwordLayout.setErrorEnabled(false);
-        return true;
-    }
-
-    private void requestFocus(View v) {
-        if (v.requestFocus()) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        } else
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
 }

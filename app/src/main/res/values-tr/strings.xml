@@ -56,14 +56,14 @@
     <string name="register_username_max_char_error">Kullanıcı adı 15 karakterden uzun olamaz.</string>
 
     <string name="register_email_null_error">Email adresi boş bırakılamaz!</string>
-    <string name="register_email_wrong_error">Girilen mail adresi geçerli değil!</string>
+    <string name="register_email_wrong_error">Girilen mail adresi geçerli bir formatta değil!</string>
     <string name="register_email_duplicate_error">Bu e-mail zaten kayıtlı.</string>
 
     <string name="register_password_null_error">Şifre alanı boş bırakılamaz.</string>
     <string name="register_password_confirm_null_error">Şifre tekrarlama alanı boş bırakılamaz.</string>
     <string name="register_password_confirm_not_match_error">Girilen parolalar aynı değil.</string>
 
-    <string name="register_check_information">Bilgileriniz kontrol ediliyor...</string>
+    <string name="register_check_information">Bilgileriniz kontrol ediliyor…</string>
 
     <string name="register_alert_title">Bağlantı Sorunu!</string>
     <string name="register_alert_text">Kayıt işlemine devam edebilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
@@ -92,7 +92,7 @@
     <string name="invite_code_code_text">* * * * * * * * *</string>
     <string name="invite_code_button_text">Kayıt Ol</string>
 
-    <string name="invite_code_progress">Bilgileriniz kaydediliyor...</string>
+    <string name="invite_code_progress">Bilgileriniz kaydediliyor…</string>
     <string name="invite_code_successful">Başarıyla kaydedildi.</string>
     <string name="invite_code_failed">Kayıt işlemi sırasında bir hata oluştu.</string>
 

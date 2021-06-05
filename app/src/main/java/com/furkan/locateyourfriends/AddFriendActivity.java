@@ -1,13 +1,11 @@
-/**
- * @author Furkan Kırmızıoğlu on 2020
- * @project Locate Your Friends
- */
+/*
+    @author Furkan Kırmızıoğlu
+*/
 
 package com.furkan.locateyourfriends;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -26,47 +24,47 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class AddFriendActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.Objects;
+
+public class AddFriendActivity extends AppCompatActivity {
     private PinView pwInviteCode;
     private ImageView imgBack;
     private Button btnAddFriend;
-    private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
     private DatabaseReference reference;
     private User friend = new User();
-    private Utility utility = new Utility();
+    private Utility utility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
         btnAddFriend = findViewById(R.id.btn_add_friend);
-        btnAddFriend.setOnClickListener(this);
         pwInviteCode = findViewById(R.id.pw_add_friend_code);
         imgBack = findViewById(R.id.img_add_friend_back);
-        imgBack.setOnClickListener(this);
-        auth = FirebaseAuth.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
         firebaseUser = auth.getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference().child("Users");
+        utility = new Utility();
 
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_add_friend: {
-                String inviteCode = pwInviteCode.getText().toString();
-                if (utility.checkInternetConnection(this, getResources().getString(R.string.add_friend_alert_text)))
-                    return;
-                if (!validationCheck(inviteCode)) return;
-                setFriend(inviteCode);
-                break;
-            }
-            case R.id.img_add_friend_back:
-                goToUserLocationMainActivity();
-                finish();
-                break;
-        }
+    protected void onResume() {
+        super.onResume();
+        btnAddFriend.setOnClickListener(v -> {
+            String inviteCode = Objects.requireNonNull(pwInviteCode.getText()).toString();
+            if (utility.checkInternetConnection(AddFriendActivity.this, getResources().getString(R.string.add_friend_alert_text)))
+                return;
+            if (!validationCheck(inviteCode)) return;
+            setFriend(inviteCode);
+        });
+
+        imgBack.setOnClickListener(v -> {
+            goToUserLocationMainActivity();
+            finish();
+        });
+
     }
 
     private void setFriend(String inviteCode) {
@@ -87,7 +85,7 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-        pwInviteCode.getText().clear();
+        Objects.requireNonNull(pwInviteCode.getText()).clear();
     }
 
     private void goToUserLocationMainActivity() {

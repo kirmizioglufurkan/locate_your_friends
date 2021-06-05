@@ -63,8 +63,12 @@
     <string name="register_password_confirm_null_error">Şifre tekrarlama alanı boş bırakılamaz.</string>
     <string name="register_password_confirm_not_match_error">Girilen parolalar aynı değil.</string>
 
-    <string name="register_check_information">Bilgileriniz kontrol ediliyor...</string>
+    <string name="register_check_information">Bilgileriniz kontrol ediliyor…</string>
     <string name="register_alert_text">Kayıt işlemine devam edebilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
+
+    <string name="register_alert_title">Bağlantı Sorunu!</string>
+    <string name="register_alert_positive_text">İnternet Ayarlarına Gidin</string>
+    <string name="register_alert_negative_text">Anladım</string>
     <!--Register Activity End-->
 
     <!--Gallery Activity-->
@@ -88,11 +92,13 @@
     <string name="invite_code_code_text">* * * * * * * * *</string>
     <string name="invite_code_button_text">Kayıt Ol</string>
 
-    <string name="invite_code_progress">Bilgileriniz kaydediliyor...</string>
+    <string name="invite_code_progress">Bilgileriniz kaydediliyor…</string>
     <string name="invite_code_successful">Başarıyla kaydedildi.</string>
     <string name="invite_code_failed">Kayıt işlemi sırasında bir hata oluştu.</string>
-
+    <string name="invite_code_alert_title">Bağlantı Sorunu!</string>
     <string name="invite_code_alert_text">Kayıt işlemini tamamlayabilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
+    <string name="invite_code_alert_positive_text">İnternet Ayarlarına Git</string>
+    <string name="invite_code_alert_negative_text">Anladım</string>
     <!--Invite Code Activity End-->
 
     <!--User Location Main Activity-->

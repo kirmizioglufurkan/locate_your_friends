@@ -59,7 +59,7 @@
 
     <string name="register_password_null_error">Password field cannot be empty.</string>
     <string name="register_password_confirm_null_error">Confirm password field cannot be empty.</string>
-    <string name="register_password_confirm_not_match_error">Passwords aren"'"t match.</string>
+    <string name="register_password_confirm_not_match_error">Passwords doesn\'t match.</string>
 
     <string name="register_check_information">Checking your information…</string>
 
@@ -150,9 +150,9 @@
     <string name="add_friend_alert_text">Please enable your internet connection in order to keep adding your friend.</string>
     <string name="add_friend_alert_positive_text">Go To Connection Settings</string>
     <string name="add_friend_alert_negative_text">Got It</string>
-    <string name="add_friend_successful">artık arkadaşınız :)</string>
-    <string name="add_friend_failed">Girdiğiniz kod herhangi bir kullanıcıya ait değil!</string>
-    <string name="add_friend_null_error">Lütfen geçerli bir davet kodu giriniz.</string>
+    <string name="add_friend_successful">now added to your friends :)</string>
+    <string name="add_friend_failed">Given code doesn"'"t belong to anyone. </string>
+    <string name="add_friend_null_error">Please enter a valid invitation code.</string>
     <!--Add Friend Activity End-->
 
 </resources>

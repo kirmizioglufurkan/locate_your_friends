@@ -1,7 +1,6 @@
-/**
- * @author Furkan Kırmızıoğlu on 2020
- * @project Locate Your Friends
- */
+/*
+    @author Furkan Kırmızıoğlu
+*/
 package com.furkan.locateyourfriends;
 
 import android.content.Intent;
@@ -23,14 +22,12 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-
         if (user == null) {
             setContentView(R.layout.activity_splash);
             startActivity(new Intent(SplashActivity.this, WelcomeActivity.class));
-            finish();
         } else {
             startActivity(new Intent(SplashActivity.this, UserLocationMainActivity.class));
-            finish();
         }
+        finish();
     }
 }
