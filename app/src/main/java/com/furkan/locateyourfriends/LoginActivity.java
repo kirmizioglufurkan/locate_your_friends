@@ -75,6 +75,13 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(LoginActivity.this, WelcomeActivity.class));
+        finish();
+    }
+
     //Authorizing to Firebase.
     private void login() {
         String email = Objects.requireNonNull(emailLayout.getEditText()).getText().toString().trim();

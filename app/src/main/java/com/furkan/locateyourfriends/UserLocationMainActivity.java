@@ -112,9 +112,9 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         tv_username = header.findViewById(R.id.tv_user_name);
         tv_user_email = header.findViewById(R.id.tv_user_email);
         iv_user_image = header.findViewById(R.id.iv_userimage);
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow).setDrawerLayout(drawer).build();
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow).setOpenableLayout(drawer).build();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(UserLocationMainActivity.this);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -367,7 +367,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
     }
 
-    // Copies UserUID to clipboard.
+    // Copies InviteCode to clipboard.
     public void getMyInviteCode() {
         try {
             DrawerLayout mDrawerLayout = findViewById(R.id.drawer_layout);

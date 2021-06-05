@@ -73,6 +73,17 @@ public class ProfileActivity extends AppCompatActivity {
         imgBack.setOnClickListener(v -> goBack());
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
+        intent.putExtra("username", username);
+        intent.putExtra("email", email);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        finish();
+    }
+
     private void saveProfileInfo() {
         String name = etName.getText().toString();
         String surname = etSurname.getText().toString();
@@ -149,7 +160,6 @@ public class ProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(ProfileActivity.this, RegisterActivity.class);
         intent.putExtra("username", username);
         intent.putExtra("email", email);
-        intent.putExtra("password", password);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();

@@ -71,6 +71,13 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(RegisterActivity.this, WelcomeActivity.class));
+        finish();
+    }
+
     //Checks input fields and calls goToGalleryActivity.
     private void register() {
         String username = etUsername.getText().toString().trim();
