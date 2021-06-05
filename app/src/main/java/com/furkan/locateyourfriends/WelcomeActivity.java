@@ -63,6 +63,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         permissionManager.checkResult(requestCode, permissions, grantResults);
         ArrayList<String> denied_permissions = permissionManager.getStatus().get(0).denied;
         if (denied_permissions.isEmpty())

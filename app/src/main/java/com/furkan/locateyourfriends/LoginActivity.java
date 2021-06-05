@@ -30,14 +30,14 @@ import com.google.firebase.auth.FirebaseAuth;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth auth;
-    private final Button btnLogin = findViewById(R.id.btn_login);
-    private final TextView goToRegister = findViewById(R.id.tv_login_goToRegister);
-    private final ImageView imgBack = findViewById(R.id.img_login_back);
-    private final ProgressBar pbLogin = findViewById(R.id.progressbar_login);
-    private final TextInputLayout emailLayout = findViewById(R.id.til_login_email);
-    private final TextInputLayout passwordLayout = findViewById(R.id.til_login_password);
-    private final EditText etEmail = findViewById(R.id.et_login_email);
-    private final EditText etPassword = findViewById(R.id.et_login_password);
+    private Button btnLogin;
+    private TextView goToRegister;
+    private ImageView imgBack;
+    private ProgressBar pbLogin;
+    private TextInputLayout emailLayout;
+    private TextInputLayout passwordLayout;
+    private EditText etEmail;
+    private EditText etPassword;
     private String user_email;
     private String user_password;
     private Utility utility;
@@ -46,9 +46,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        btnLogin.setOnClickListener(this);
-        goToRegister.setOnClickListener(this);
-        imgBack.setOnClickListener(this);
+        btnLogin = findViewById(R.id.btn_login);
+        goToRegister = findViewById(R.id.tv_login_goToRegister);
+        imgBack = findViewById(R.id.img_login_back);
+        pbLogin = findViewById(R.id.progressbar_login);
+        emailLayout = findViewById(R.id.til_login_email);
+        passwordLayout = findViewById(R.id.til_login_password);
+        etEmail = findViewById(R.id.et_login_email);
+        etPassword = findViewById(R.id.et_login_password);
+        btnLogin.setOnClickListener(LoginActivity.this);
+        goToRegister.setOnClickListener(LoginActivity.this);
+        imgBack.setOnClickListener(LoginActivity.this);
         pbLogin.setVisibility(View.INVISIBLE);
         auth = FirebaseAuth.getInstance();
         Intent intent = getIntent();

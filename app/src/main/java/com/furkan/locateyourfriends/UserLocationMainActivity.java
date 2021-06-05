@@ -88,7 +88,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     private FirebaseUser firebaseUser;
     private GoogleMap mMap;
     private DatabaseReference databaseReference;
-    private LatLng latLngDefault = new LatLng(41.0049823, 28.7319909);
+    private final LatLng latLngDefault = new LatLng(41.0049823, 28.7319909);
     private boolean locationPermissionGranted = true;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location lastKnownLocation;
@@ -100,7 +100,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     private ImageView iv_user_image;
     private NavigationView navigationView;
 
-    private Utility utility;
+    private Utility utility = new Utility();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -306,35 +306,23 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
 
     private void addMyItems(Menu menu) {
         final SubMenu myMenu = menu.addSubMenu(R.string.user_me);
-        myMenu.add(getResources().getString(R.string.add_friend_text)).setIcon(R.drawable.add_friend).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(UserLocationMainActivity.this, AddFriendActivity.class);
-                startActivity(intent);
-                return true;
-            }
+        myMenu.add(getResources().getString(R.string.add_friend_text)).setIcon(R.drawable.add_friend).setOnMenuItemClickListener(item -> {
+            Intent intent = new Intent(UserLocationMainActivity.this, AddFriendActivity.class);
+            startActivity(intent);
+            return true;
         });
-        myMenu.add(getResources().getString(R.string.user_get_invite_code)).setIcon(R.drawable.copy_clipboard).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                getMyInviteCode();
-                return true;
-            }
+        myMenu.add(getResources().getString(R.string.user_get_invite_code)).setIcon(R.drawable.copy_clipboard).setOnMenuItemClickListener(item -> {
+            getMyInviteCode();
+            return true;
         });
-        myMenu.add(getResources().getString(R.string.user_gps_whatsApp)).setIcon(R.drawable.share_on_whatsapp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                shareOnWhatsApp();
-                return true;
-            }
+        myMenu.add(getResources().getString(R.string.user_gps_whatsApp)).setIcon(R.drawable.share_on_whatsapp).setOnMenuItemClickListener(item -> {
+            shareOnWhatsApp();
+            return true;
         });
 
-        myMenu.add(getResources().getString(R.string.user_sign_out)).setIcon(R.drawable.sign_out).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                signOut();
-                return true;
-            }
+        myMenu.add(getResources().getString(R.string.user_sign_out)).setIcon(R.drawable.sign_out).setOnMenuItemClickListener(item -> {
+            signOut();
+            return true;
         });
     }
 
