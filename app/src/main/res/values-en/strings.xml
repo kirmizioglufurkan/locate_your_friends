@@ -103,9 +103,9 @@
     <!--User Location Main Activity-->
     <string name="user_me">My Page</string>
     <string name="user_add_friend">Add Your Friend</string>
-    <string name="user_get_invite_code">Copy My Code</string>
+    <string name="user_get_invite_code">Share Invite Code</string>
     <string name="user_invite_code_copied">Copied your code to clipboard.</string>
-    <string name="user_invite_code_prefix">My invite code on Neredesin application:</string>
+    <string name="user_invite_code_prefix">My invitation code on Neredesin application:</string>
     <string name="user_gps_whatsApp">Share Location On WhatsApp</string>
     <string name="user_gps_whatsApp_text">I"'"m here now: https://www.google.com/maps/@</string>
     <string name="user_sign_out">Sign Out</string>
@@ -143,9 +143,9 @@
 
     <!--Add Friend Activity-->
     <string name="add_friend_text">Add Your Friends</string>
-    <string name="add_friend_sub_text">Please enter your friend"'"s invite code.</string>
+    <string name="add_friend_sub_text">Please enter your friend"'"s invite code below or scan the QR code.</string>
     <string name="add_friend_button_text">Add Friend</string>
-
+    <string name="add_friend_qr_button_text">QR</string>
     <string name="add_friend_alert_title">Connection Problem!</string>
     <string name="add_friend_alert_text">Please enable your internet connection in order to keep adding your friend.</string>
     <string name="add_friend_alert_positive_text">Go To Connection Settings</string>
@@ -154,5 +154,10 @@
     <string name="add_friend_failed">Given code doesn"'"t belong to anyone. </string>
     <string name="add_friend_null_error">Please enter a valid invitation code.</string>
     <!--Add Friend Activity End-->
+
+    <!-- Referral Code Activity -->
+    <string name="referral_code_header">Referral Code</string>
+    <string name="referral_code_text">You can share your referral code via QR code or copy as a plain text.</string>
+    <string name="referral_code_button_text">Copy Code</string>
 
 </resources>

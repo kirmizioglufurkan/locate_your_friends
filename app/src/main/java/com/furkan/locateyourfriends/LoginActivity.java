@@ -5,6 +5,7 @@ package com.furkan.locateyourfriends;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -87,17 +88,17 @@ public class LoginActivity extends AppCompatActivity {
         String email = Objects.requireNonNull(emailLayout.getEditText()).getText().toString().trim();
         String password = Objects.requireNonNull(passwordLayout.getEditText()).getText().toString().trim();
 
-        if (!utility.emailNullCheck(email)) {
+        if (email.isEmpty()) {
             emailLayout.setError(getResources().getString(R.string.register_email_null_error));
             utility.requestFocus(etEmail, LoginActivity.this);
             return;
         }
-        if (!utility.emailFormatCheck(email)) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailLayout.setError(getResources().getString(R.string.register_email_wrong_error));
             utility.requestFocus(etEmail, LoginActivity.this);
             return;
         }
-        if (!utility.passwordNullCheck(password)) {
+        if (password.isEmpty()) {
             passwordLayout.setError(getResources().getString(R.string.login_password_null_error));
             utility.requestFocus(etPassword, LoginActivity.this);
             return;

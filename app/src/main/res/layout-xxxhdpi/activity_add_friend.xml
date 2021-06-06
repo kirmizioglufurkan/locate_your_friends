@@ -85,4 +85,16 @@
         app:layout_constraintStart_toStartOf="@+id/pw_add_friend_code"
         app:layout_constraintTop_toBottomOf="@+id/pw_add_friend_code" />
 
+    <Button
+        android:id="@+id/btn_qr"
+        style="@style/CustomButton"
+        android:text="@string/add_friend_qr_button_text"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_add_friend"
+        app:layout_constraintEnd_toEndOf="@+id/pw_add_friend_code"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/btn_add_friend"
+        app:layout_constraintTop_toTopOf="@+id/btn_add_friend"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

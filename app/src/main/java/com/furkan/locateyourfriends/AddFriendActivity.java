@@ -30,6 +30,7 @@ public class AddFriendActivity extends AppCompatActivity {
     private PinView pwInviteCode;
     private ImageView imgBack;
     private Button btnAddFriend;
+    private Button btnQrScanner;
     private FirebaseUser firebaseUser;
     private DatabaseReference reference;
     private User friend = new User();
@@ -40,31 +41,39 @@ public class AddFriendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
         btnAddFriend = findViewById(R.id.btn_add_friend);
+        btnQrScanner = findViewById(R.id.btn_qr);
         pwInviteCode = findViewById(R.id.pw_add_friend_code);
         imgBack = findViewById(R.id.img_add_friend_back);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         firebaseUser = auth.getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference().child("Users");
         utility = new Utility();
-
+        Intent intent = getIntent();
+        if (intent != null) {
+            pwInviteCode.setText(intent.getStringExtra("referralCode"));
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        btnAddFriend.setOnClickListener(v -> {
-            String inviteCode = Objects.requireNonNull(pwInviteCode.getText()).toString();
-            if (utility.checkInternetConnection(AddFriendActivity.this, getResources().getString(R.string.add_friend_alert_text)))
-                return;
-            if (!validationCheck(inviteCode)) return;
-            setFriend(inviteCode);
-        });
-
         imgBack.setOnClickListener(v -> {
             goToUserLocationMainActivity();
             finish();
         });
-
+        btnAddFriend.setOnClickListener(v -> {
+            String inviteCode = Objects.requireNonNull(pwInviteCode.getText()).toString();
+            if (utility.checkInternetConnection(AddFriendActivity.this, getResources().getString(R.string.add_friend_alert_text)))
+                return;
+            if (inviteCode.isEmpty()) {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.add_friend_null_error), Toast.LENGTH_SHORT).show();
+            } else {
+                setFriend(inviteCode);
+            }
+        });
+        btnQrScanner.setOnClickListener(v -> {
+            startActivity(new Intent(AddFriendActivity.this, ScanQrCodeActivity.class));
+        });
     }
 
     private void setFriend(String inviteCode) {
@@ -95,12 +104,9 @@ public class AddFriendActivity extends AppCompatActivity {
         finish();
     }
 
-    private boolean validationCheck(String codeText) {
-        if (codeText.isEmpty()) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.add_friend_null_error), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(AddFriendActivity.this, UserLocationMainActivity.class));
     }
-
 }

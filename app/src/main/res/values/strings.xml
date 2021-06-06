@@ -104,9 +104,9 @@
     <!--User Location Main Activity-->
     <string name="user_me">Ben</string>
     <string name="user_add_friend">Arkadaşınızı Ekleyin</string>
-    <string name="user_get_invite_code">Kodumu Kopyala</string>
+    <string name="user_get_invite_code">Davet Kodu Paylaş</string>
     <string name="user_invite_code_prefix">Neredesin uygulaması davet kodum:</string>
-    <string name="user_invite_code_copied">Kodunuz panoya kopyalandı.</string>
+    <string name="user_invite_code_copied">Davet kodunuz kopyalandı.</string>
     <string name="user_gps_whatsApp">Konumumu Whatsapp"'"ta Paylaş </string>
     <string name="user_gps_whatsApp_text">Şu an buradayım: https://www.google.com/maps/@</string>
     <string name="user_sign_out">Oturumu Kapat</string>
@@ -148,12 +148,19 @@
     <string name="add_friend_alert_positive_text">Bağlantı Ayarlarına Git</string>
     <string name="add_friend_alert_negative_text">Anladım</string>
     <string name="add_friend_text">Arkadaşınızı Ekleyin</string>
-    <string name="add_friend_sub_text">Lütfen arkadaşınızın davet kodunu aşağıdaki alana giriniz.</string>
+    <string name="add_friend_sub_text">Lütfen arkadaşınızın davet kodunu aşağıdaki alana giriniz veya QR kodunu okutunuz.</string>
     <string name="add_friend_button_text">Ekle</string>
+    <string name="add_friend_qr_button_text" translatable="false">QR Oku</string>
     <string name="add_friend_alert_text">Arkadaş ekleyebilmek için lütfen internet bağlantınızı aktif hale getiriniz.</string>
     <string name="add_friend_successful">artık arkadaşınız :)</string>
     <string name="add_friend_failed">Girdiğiniz kod herhangi bir kullanıcıya ait değil!</string>
     <string name="add_friend_null_error">Lütfen geçerli bir davet kodu giriniz.</string>
     <!--Add Friend Activity End-->
+
+    <!-- Referral Code Activity -->
+    <string name="referral_code_header" translatable="false">Referans Numaranız</string>
+    <string name="referral_code_text" translatable="false">Referans numaranızı QR kod olarak arkadaşınıza gösterebilir veya düz metin olarak paylaşabilirsiniz.</string>
+    <string name="referral_code_button_text" translatable="false">Kodu Kopyala</string>
+    <!-- Referral Code Activity End-->
 
 </resources>

@@ -6,6 +6,7 @@ package com.furkan.locateyourfriends;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -89,13 +90,13 @@ public class RegisterActivity extends AppCompatActivity {
             layoutUsername.setErrorEnabled(true);
             layoutUsername.setError(getResources().getString(R.string.register_username_null_error));
         }
-        if (!utility.emailNullCheck(email)) {
+        if (email.isEmpty()) {
             layoutEmail.setErrorEnabled(true);
             layoutEmail.setError(getResources().getString(R.string.register_email_null_error));
             utility.requestFocus(etEmail, RegisterActivity.this);
             return;
         }
-        if (!utility.emailFormatCheck(email)) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             layoutEmail.setErrorEnabled(true);
             layoutEmail.setError(getResources().getString(R.string.register_email_wrong_error));
             etEmail.setError("Valid Input Required");

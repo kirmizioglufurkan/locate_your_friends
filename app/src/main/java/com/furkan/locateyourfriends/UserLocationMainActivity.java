@@ -261,7 +261,7 @@ public class UserLocationMainActivity extends AppCompatActivity implements OnMap
     }
 
 
-    // ------MENU ITEMS & ACTIONS------
+// ------MENU ITEMS & ACTIONS------
 
     // Fetches information of current user.
     private void getCurrentUser(DatabaseReference reference) {

@@ -14,7 +14,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
-import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -86,16 +85,7 @@ public class Utility {
     }
 
     public void exitAlert(Activity activity, final DatabaseReference reference, final String user_uid) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(activity.getResources().getString(R.string.user_exit_alert_title));
-        builder.setIcon(R.drawable.sign_out);
-        builder.setMessage(activity.getResources().getString(R.string.user_exit_alert_text));
-        builder.setNegativeButton(activity.getResources().getString(R.string.user_exit_alert_negative_text), null);
-        builder.setPositiveButton(activity.getResources().getString(R.string.user_exit_alert_positive_text), (dialog, which) -> {
-            reference.child(user_uid).child(IS_SHARING).setValue(false);
-            System.exit(0);
-        });
-        builder.show();
+
     }
 
     public BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
@@ -106,18 +96,6 @@ public class Utility {
         Canvas canvas = new Canvas(bitmap);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
-    public boolean emailNullCheck(String email) {
-        return !email.isEmpty();
-    }
-
-    public boolean emailFormatCheck(String email) {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    public boolean passwordNullCheck(String password) {
-        return !password.isEmpty();
     }
 
     public void requestFocus(View view, Activity activity) {
